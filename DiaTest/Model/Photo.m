@@ -10,13 +10,13 @@
 
 @implementation Photo
 
-- (instancetype)initWithServerResponse:(NSDictionary *) responseObject {
+- (instancetype)initWithServerResponse:(NSDictionary *)responseObject {
     
     self = [super init];
     if (self) {
         NSArray *sizesArray = [responseObject objectForKey:@"sizes"];
         
-        for (NSDictionary* dict in sizesArray) {
+        for (NSDictionary *dict in sizesArray) {
             if ([[dict objectForKey:@"type"] isEqualToString:@"s"]) {
                 self.photo75URL = [NSURL URLWithString:[dict objectForKey:@"url"]];
                 self.photo75size = CGSizeMake([[dict objectForKey:@"width"] integerValue], [[dict objectForKey:@"height"] integerValue]);

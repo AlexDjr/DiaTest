@@ -20,6 +20,6 @@
 @property (strong,nonatomic) NSString *membersCount;
 @property (strong,nonatomic) NSString *status;
 
-- (instancetype)initWithServerResponse:(NSDictionary *) responseObject;
+- (instancetype)initWithServerResponse:(NSDictionary *)responseObject;
 
 @end

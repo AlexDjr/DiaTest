@@ -31,8 +31,8 @@ extern CGFloat const defaultLikesButtonTopConstraintValue;
 @end
 
 @protocol PostCellDelegate <NSObject>
-- (void) didSelectLikeButtonInCell: (PostCell *) cell;
-- (void) didSelectCommentButtonInCell: (PostCell *) cell;
+- (void)didSelectLikeButtonInCell: (PostCell *)cell;
+- (void)didSelectCommentButtonInCell: (PostCell *)cell;
 @end
 
 NS_ASSUME_NONNULL_END

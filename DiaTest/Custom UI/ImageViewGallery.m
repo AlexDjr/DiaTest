@@ -21,7 +21,7 @@ CGFloat const imageViewGalleryInset = 5.0;
 
 @implementation ImageViewGallery
 
-- (instancetype) initWithImageArray:(NSArray *) images {
+- (instancetype)initWithImageArray:(NSArray *)images {
     
     self = [super init];
     if (self) {
@@ -81,7 +81,7 @@ CGFloat const imageViewGalleryInset = 5.0;
     return self;
 }
 
-- (void) displayImage:(UIImageView*)imageView withImage:(UIImage *)image  withImageURL:(NSURL *)imageURL index:(NSInteger)index {
+- (void)displayImage:(UIImageView *)imageView withImage:(UIImage *)image  withImageURL:(NSURL *)imageURL index:(NSInteger)index {
     
     [imageView setImage:image];
     imageView.contentMode = UIViewContentModeScaleAspectFill;
@@ -94,12 +94,12 @@ CGFloat const imageViewGalleryInset = 5.0;
 }
 
 
-- (NSInteger) numberImagesForImageViewer:(MHFacebookImageViewer *)imageViewer {
+- (NSInteger)numberImagesForImageViewer:(MHFacebookImageViewer *)imageViewer {
     return [self.images count];
 }
 
 
--  (NSURL*) imageURLAtIndex:(NSInteger)index imageViewer:(MHFacebookImageViewer *)imageViewer {
+- (NSURL *)imageURLAtIndex:(NSInteger)index imageViewer:(MHFacebookImageViewer *)imageViewer {
     if ([[self.images objectAtIndex:index] isKindOfClass:[Photo class]]) {
         Photo *photoObject = [self.images objectAtIndex:index];
         NSURL *photoURL = [[NSURL alloc] init];
@@ -117,11 +117,11 @@ CGFloat const imageViewGalleryInset = 5.0;
     }
 }
 
-- (UIImage *) imageDefaultAtIndex:(NSInteger)index imageViewer:(MHFacebookImageViewer *)imageViewer{
+- (UIImage *)imageDefaultAtIndex:(NSInteger)index imageViewer:(MHFacebookImageViewer *)imageViewer{
     return nil;
 }
 
-- (void) setFramesForImageViewsToFitSize:(CGSize)frameSize {
+- (void)setFramesForImageViewsToFitSize:(CGSize)frameSize {
     NSInteger imageIndex = 1;
     UIImageView *prevImageView = [[UIImageView alloc] init];
     

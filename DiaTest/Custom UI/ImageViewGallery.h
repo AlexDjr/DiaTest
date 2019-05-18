@@ -16,6 +16,6 @@ extern CGFloat const imageViewGalleryInset;
 @property (nonatomic, strong) NSMutableArray *imageViews;
 @property (nonatomic, strong) NSMutableArray *imageFrames;
 
-- (instancetype) initWithImageArray:(NSArray *) images;
+- (instancetype)initWithImageArray:(NSArray *)images;
 
 @end

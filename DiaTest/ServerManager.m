@@ -18,14 +18,13 @@
 
 
 @interface ServerManager()
-@property (strong, nonatomic) AFHTTPSessionManager * reguestManager;
+@property (strong, nonatomic) AFHTTPSessionManager *reguestManager;
 @property (strong, nonatomic) AccessToken *accessToken;
 @end
 
-
 @implementation ServerManager
-+ (ServerManager*) sharedManager {
-    static ServerManager* manager = nil;
++ (ServerManager*)sharedManager {
+    static ServerManager *manager = nil;
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -34,7 +33,7 @@
     return manager;
 }
 
-- (void) authorizeUserWithToken:(AccessToken*) token andCompletion:(void(^)(User *user)) completion {
+- (void)authorizeUserWithToken:(AccessToken *)token andCompletion:(void(^)(User *user))completion {
     self.accessToken = token;
     if (token) {
         [self getUser:self.accessToken.userId
@@ -52,7 +51,7 @@
     }
 }
 
-- (void) logoutWithCompletion:(void(^)(void)) completion {
+- (void)logoutWithCompletion:(void(^)(void))completion {
     //    очищаем куки
     NSHTTPCookie *cookie;
     NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
@@ -66,8 +65,7 @@
         }
     }
     //    делаем logout
-    NSString *urlString = [NSString stringWithFormat:
-                           @"https://api.vk.com/oauth/logout"];
+    NSString *urlString = [NSString stringWithFormat: @"https://api.vk.com/oauth/logout"];
     
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
     [manager GET:urlString
@@ -79,8 +77,7 @@
          }];
 }
 
-- (instancetype)init
-{
+- (instancetype)init {
     self = [super init];
     if (self) {
         NSURL *url = [NSURL URLWithString:@"https://api.vk.com/method/"];
@@ -90,9 +87,9 @@
 }
 
 #pragma mark - GET METHODS
-- (void) getUser:(NSString*) userID
-       onSuccess:(void(^)(User* user)) success
-       onFailure:(void(^)(NSError *error, NSInteger statusCode)) failure {
+- (void)getUser:(NSString *)userID
+      onSuccess:(void(^)(User *user))success
+      onFailure:(void(^)(NSError *error, NSInteger statusCode))failure {
     
     AFHTTPSessionManager *manager = self.reguestManager;
     
@@ -130,12 +127,12 @@
          }];
 }
 
-- (void) getWall:(NSString*) ownerID
-            type:(NSString*) wallType
-       wthOffset:(NSInteger) offset
-           count:(NSInteger) count
-       onSuccess:(void(^)(NSArray* posts)) success
-       onFailure:(void(^)(NSError *error, NSInteger statusCode)) failure {
+- (void)getWall:(NSString *)ownerID
+           type:(NSString *)wallType
+      wthOffset:(NSInteger)offset
+          count:(NSInteger)count
+      onSuccess:(void(^)(NSArray *posts))success
+      onFailure:(void(^)(NSError *error, NSInteger statusCode))failure {
     
     [self editOwnerId:wallType];
     AFHTTPSessionManager *manager = self.reguestManager;
@@ -159,7 +156,7 @@
              NSMutableArray *objectsArray = [NSMutableArray array];
              
              NSInteger i = 0;
-             for (NSDictionary* dict in itemsArray) {
+             for (NSDictionary *dict in itemsArray) {
                  
                  Post *post = [[Post alloc] initWithServerResponse:dict];
                  User *user = nil;
@@ -199,13 +196,13 @@
          }];
 }
 
-- (void) getCommentsFromPost:(NSString*) postID
-                      onWall:(NSString*) ownerID
-                        type:(NSString*) wallType
-                   wthOffset:(NSInteger) offset
-                       count:(NSInteger) count
-                   onSuccess:(void(^)(NSArray* comments)) success
-                   onFailure:(void(^)(NSError *error, NSInteger statusCode)) failure {
+- (void)getCommentsFromPost:(NSString *)postID
+                     onWall:(NSString *)ownerID
+                       type:(NSString *)wallType
+                  wthOffset:(NSInteger)offset
+                      count:(NSInteger)count
+                  onSuccess:(void(^)(NSArray *comments))success
+                  onFailure:(void(^)(NSError *error, NSInteger statusCode))failure {
  
     [self editOwnerId:wallType];
     AFHTTPSessionManager *manager = self.reguestManager;
@@ -271,12 +268,12 @@
 
 
 #pragma mark - POST METHODS
-- (void) postLikeOn:(NSString*) contentType
-             withID:(NSString*) itemID
-             onWall:(NSString*) ownerID
-               type:(NSString*) wallType
-          onSuccess:(void(^)(id result)) success
-          onFailure:(void(^)(NSError *error, NSInteger statusCode)) failure {
+- (void) postLikeOn:(NSString *)contentType
+             withID:(NSString *)itemID
+             onWall:(NSString *)ownerID
+               type:(NSString *)wallType
+          onSuccess:(void(^)(id result))success
+          onFailure:(void(^)(NSError *error, NSInteger statusCode))failure {
     
     [self editOwnerId:wallType];
     AFHTTPSessionManager *manager = self.reguestManager;
@@ -303,12 +300,12 @@
 }
 
 #pragma mark DELETE METHODS
-- (void) deleteLikeFrom:(NSString*) contentType
-                 withID:(NSString*) itemID
-                 onWall:(NSString*) ownerID
-                   type:(NSString*) wallType
-                  onSuccess:(void(^)(id result)) success
-                  onFailure:(void(^)(NSError *error, NSInteger statusCode)) failure {
+- (void) deleteLikeFrom:(NSString *)contentType
+                 withID:(NSString *)itemID
+                 onWall:(NSString *)ownerID
+                   type:(NSString *)wallType
+              onSuccess:(void(^)(id result))success
+              onFailure:(void(^)(NSError *error, NSInteger statusCode))failure {
     
     [self editOwnerId:wallType];
     AFHTTPSessionManager *manager = self.reguestManager;
@@ -335,7 +332,7 @@
 }
 
 #pragma mark - PRIVATE METHODS
-- (NSString*) editOwnerId: (NSString*) wallType {
+- (NSString *)editOwnerId:(NSString *)wallType {
     NSString *ownerID = @"";
     
     //    для группы добавляем минус, если нет

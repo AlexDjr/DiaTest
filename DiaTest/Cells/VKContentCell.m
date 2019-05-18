@@ -22,7 +22,7 @@
 }
 
 #pragma mark - Private Methods
-- (void) setupAvatarImageView {
+- (void)setupAvatarImageView {
     CALayer *imageLayer = self.avatarImageView.layer;
     CGFloat radius = self.avatarImageView.frame.size.height / 2;
     [imageLayer setCornerRadius:radius];
@@ -31,7 +31,7 @@
 }
 
 #pragma mark - Public Methods
-- (void) setAvatarWith:(NSURL*) url {
+- (void)setAvatarWith:(NSURL *)url {
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
     
     __weak VKContentCell *weakCell = self;
@@ -48,8 +48,8 @@
                                          }];
 }
 
-- (void) changeLikeWith:(LikeAction) actionType on:(NSString*) contentType withId:(NSString*) contentId onWall:(NSString*) wallId withCompletion:(void(^)(id result)) completion {
-    ServerManager* manager = [ServerManager sharedManager];
+- (void)changeLikeWith:(LikeAction)actionType on:(NSString *)contentType withId:(NSString *)contentId onWall:(NSString *)wallId withCompletion:(void(^)(id result))completion {
+    ServerManager *manager = [ServerManager sharedManager];
     
     if (actionType == LikeActionPost) {
         [manager postLikeOn:contentType

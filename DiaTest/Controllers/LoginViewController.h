@@ -12,10 +12,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class AccessToken;
 
-typedef void(^LoginCompletionBlock)(AccessToken* _Nullable token);
+typedef void(^LoginCompletionBlock)(AccessToken * _Nullable token);
 
 @interface LoginViewController : UIViewController
-- (id) initWithCompletionBlock:(LoginCompletionBlock) completion;
+- (id)initWithCompletionBlock:(LoginCompletionBlock)completion;
 @end
 
 NS_ASSUME_NONNULL_END

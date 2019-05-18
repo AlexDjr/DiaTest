@@ -19,8 +19,8 @@ typedef enum LikeAction : NSUInteger {
 @interface VKContentCell : UITableViewCell
 
 @property (weak, nonatomic) IBOutlet UIImageView *avatarImageView;
-- (void) setAvatarWith:(NSURL*) url;
-- (void) changeLikeWith:(LikeAction) actionType on:(NSString*) type withId:(NSString*) contentId onWall:(NSString*) wallId withCompletion:(void(^)(id result)) completion;
+- (void)setAvatarWith:(NSURL *)url;
+- (void)changeLikeWith:(LikeAction)actionType on:(NSString *)type withId:(NSString *)contentId onWall:(NSString *)wallId withCompletion:(void(^)(id result))completion;
 @end
 
 NS_ASSUME_NONNULL_END

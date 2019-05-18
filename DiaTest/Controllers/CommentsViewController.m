@@ -18,10 +18,12 @@
 #import "Group.h"
 #import "Comment.h"
 
+static NSString * const commentCellIdentifier = @"CommentCell";
+
 @interface CommentsViewController () <CommentCellDelegate>
 @property (strong, nonatomic) NSMutableArray *commentsArray;
 @property (strong, nonatomic) NSString *wallID;
-@property (strong, nonatomic) ServerManager * manager;
+@property (strong, nonatomic) ServerManager *manager;
 @end
 
 @implementation CommentsViewController
@@ -52,8 +54,6 @@ static NSInteger commentsInRequest = 20;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString* commentCellIdentifier = @"CommentCell";
-    
     CommentCell *cell = [tableView dequeueReusableCellWithIdentifier:commentCellIdentifier];
     if (!cell) {
         cell = [[CommentCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:commentCellIdentifier];
@@ -71,9 +71,8 @@ static NSInteger commentsInRequest = 20;
     return UITableViewAutomaticDimension;
 }
 
-
 #pragma mark - CommentCellDelegate
-- (void) didSelectLikeButtonInCell: (CommentCell *) cell {
+- (void)didSelectLikeButtonInCell:(CommentCell *)cell {
     LikeAction likeAction = LikeActionDefault;
     
     if (cell.comment.isLikedByUser) {
@@ -92,7 +91,7 @@ static NSInteger commentsInRequest = 20;
 }
 
 #pragma mark - API
-- (void) getComments {
+- (void)getComments {
     [self.manager getCommentsFromPost:self.post.postId
                                onWall:self.wallID
                                  type:@"user"
@@ -113,7 +112,7 @@ static NSInteger commentsInRequest = 20;
                             }];
 }
 
-- (void) deleteLikeFrom:(CommentCell *) cell {
+- (void)deleteLikeFrom:(CommentCell *)cell {
     [self.manager deleteLikeFrom:@"comment"
                           withID:cell.comment.commentId
                           onWall:self.wallID
@@ -135,7 +134,7 @@ static NSInteger commentsInRequest = 20;
                        }];
 }
 
-- (void) postLikeOn:(CommentCell *) cell {
+- (void)postLikeOn:(CommentCell *)cell {
     [self.manager postLikeOn:@"comment"
                       withID:cell.comment.commentId
                       onWall:self.wallID
@@ -157,9 +156,8 @@ static NSInteger commentsInRequest = 20;
                    }];
 }
 
-
 #pragma mark - Methods
-- (void) setup:(CommentCell *)cell withComment:(Comment*) comment {
+- (void)setup:(CommentCell *)cell withComment:(Comment *)comment {
     cell.comment = comment;
     
     NSURL *authorPhotoURL = nil;
@@ -192,7 +190,7 @@ static NSInteger commentsInRequest = 20;
     [cell setAvatarWith:authorPhotoURL];
 }
 
-- (void) updateLikesAt:(CommentCell*) cell after:(LikeAction) actionType with:(id) result {
+- (void)updateLikesAt:(CommentCell *)cell after:(LikeAction)actionType with:(id)result {
     UIColor *likesColor = [[UIColor alloc] init];
     UIImage *likesImage = [[UIImage alloc] init];
     BOOL isLikedByUser = FALSE;

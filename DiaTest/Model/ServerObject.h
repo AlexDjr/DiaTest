@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 
 @interface ServerObject : NSObject
-- (id) initWithServerResponse:(NSDictionary*) responseObject;
+- (id)initWithServerResponse:(NSDictionary *)responseObject;
 @end

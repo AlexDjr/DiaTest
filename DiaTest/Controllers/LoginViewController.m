@@ -16,8 +16,7 @@
 
 @implementation LoginViewController
 
-- (id) initWithCompletionBlock:(LoginCompletionBlock) completion {
-    
+- (id)initWithCompletionBlock:(LoginCompletionBlock)completion {
     self = [super init];
     if (self) {
         self.completion = completion;
@@ -96,7 +95,7 @@
     
     self.navigationItem.title = @"Авторизация";
     
-    NSString* urlString = [NSString stringWithFormat:
+    NSString *urlString = [NSString stringWithFormat:
                            @"https://oauth.vk.com/authorize?"
                            "client_id=6984654&"
                            "display=mobile&"
@@ -115,7 +114,7 @@
 }
 
 #pragma mark - Actions
-- (void) actionCancel:(UIBarButtonItem*) item {
+- (void)actionCancel:(UIBarButtonItem *)item {
     if (self.completion) {
         self.completion(nil);
     }

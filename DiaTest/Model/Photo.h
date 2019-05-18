@@ -23,5 +23,5 @@
 @property (strong,nonatomic) NSURL *photo2560URL;
 @property (assign,nonatomic) CGSize photo2560size;
 
-- (instancetype)initWithServerResponse:(NSDictionary *) responseObject;
+- (instancetype)initWithServerResponse:(NSDictionary *)responseObject;
 @end

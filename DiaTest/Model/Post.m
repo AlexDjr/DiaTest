@@ -11,8 +11,7 @@
 
 @implementation Post
 
-- (instancetype)initWithServerResponse:(NSDictionary*) responseObject
-{
+- (instancetype)initWithServerResponse:(NSDictionary *)responseObject {
     self = [super initWithServerResponse:responseObject];
     if (self) {
         self.postId = [responseObject objectForKey:@"id"];

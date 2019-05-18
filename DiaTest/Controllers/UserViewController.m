@@ -22,11 +22,13 @@
 #import "UserInfoCell.h"
 #import "PostCell.h"
 
+static NSString * const userInfoIdentifier = @"UserInfoCell";
+static NSString * const postCellIdentifier = @"PostCell";
 
 @interface UserViewController () <PostCellDelegate>
 @property (strong, nonatomic) NSMutableArray *postsArray;
 @property (strong, nonatomic) Post *currentPost;
-@property (strong, nonatomic) ServerManager * manager;
+@property (strong, nonatomic) ServerManager *manager;
 
 - (IBAction)logoutAction:(UIBarButtonItem *)sender;
 @end
@@ -68,9 +70,6 @@ static NSInteger postsInRequest = 20;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString* userInfoIdentifier = @"UserInfoCell";
-    static NSString* postCellIdentifier = @"PostCell";
-    
     if (indexPath.section == 0) {
         
         UserInfoCell *cell = [tableView dequeueReusableCellWithIdentifier:userInfoIdentifier];
@@ -123,7 +122,7 @@ static NSInteger postsInRequest = 20;
 }
 
 #pragma mark - PostCellDelegate
-- (void) didSelectLikeButtonInCell:(PostCell *) cell {
+- (void)didSelectLikeButtonInCell:(PostCell *)cell {
     LikeAction likeAction = LikeActionDefault;
     
     if (cell.post.isLikedByUser) {
@@ -141,7 +140,7 @@ static NSInteger postsInRequest = 20;
     }];
 }
 
-- (void) didSelectCommentButtonInCell:(PostCell *) cell {
+- (void)didSelectCommentButtonInCell:(PostCell *)cell {
     for (Post *post in self.postsArray) {
         if ([post isEqual:cell.post]) {
             self.currentPost = post;
@@ -160,7 +159,7 @@ static NSInteger postsInRequest = 20;
 }
 
 #pragma mark - API
-- (void) getUserInfo {
+- (void)getUserInfo {
     [self.manager getUser:self.user.userId
                 onSuccess:^(User *user) {
                     self.user = user;
@@ -172,7 +171,7 @@ static NSInteger postsInRequest = 20;
                 }];
 }
 
-- (void) getPosts {
+- (void)getPosts {
     if (!self.postsArray) {
         self.postsArray = [NSMutableArray array];
     }
@@ -201,7 +200,7 @@ static NSInteger postsInRequest = 20;
                 }];
 }
 
-- (void) refreshWall {
+- (void)refreshWall {
     [self.manager getWall:self.user.userId
                      type:@"user"
                 wthOffset:0
@@ -220,7 +219,7 @@ static NSInteger postsInRequest = 20;
 }
 
 #pragma mark - Methods
-- (void) setupView {
+- (void)setupView {
     self.manager = [ServerManager sharedManager];
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     self.tableView.showsVerticalScrollIndicator = NO;
@@ -233,7 +232,7 @@ static NSInteger postsInRequest = 20;
     self.refreshControl = refresh;
 }
 
-- (void) login {
+- (void)login {
     LoginViewController *loginController = [[LoginViewController alloc] initWithCompletionBlock:^(AccessToken *token) {
         [self.manager authorizeUserWithToken:token andCompletion:^(User *user) {
             self.manager.currentUser = user;
@@ -248,7 +247,7 @@ static NSInteger postsInRequest = 20;
     [mainController presentViewController:navController animated:YES completion:nil];
 }
 
-- (void) setup:(UserInfoCell *)cell withUser:(User*) user {
+- (void)setup:(UserInfoCell *)cell withUser:(User *)user {
     [cell setAvatarWith:self.user.photoURL200];
     
     if (user) {
@@ -267,7 +266,7 @@ static NSInteger postsInRequest = 20;
     }
 }
 
-- (void) setup:(PostCell *)cell withPost:(Post*) post {
+- (void)setup:(PostCell *)cell withPost:(Post*) post {
     cell.post = post;
     
     NSURL *authorPhotoURL = nil;
@@ -316,7 +315,7 @@ static NSInteger postsInRequest = 20;
     }
 }
 
-- (void) updateLikesAt:(PostCell*) cell after:(LikeAction) actionType with:(id) result {
+- (void)updateLikesAt:(PostCell *)cell after:(LikeAction)actionType with:(id)result {
     UIColor *likesColor = [[UIColor alloc] init];
     UIImage *likesImage = [[UIImage alloc] init];
     BOOL isLikedByUser = FALSE;
@@ -341,8 +340,8 @@ static NSInteger postsInRequest = 20;
     cell.post.isLikedByUser = isLikedByUser;
 }
 
-- (void) infiniteScrolling {
-    __weak UserViewController* weakSelf = self;
+- (void)infiniteScrolling {
+    __weak UserViewController *weakSelf = self;
     [self.tableView addInfiniteScrollingWithActionHandler:^{
         [weakSelf getPosts];
     }];

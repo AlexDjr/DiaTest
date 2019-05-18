@@ -115,7 +115,6 @@ UIEdgeInsets scrollViewOriginalContentInsets;
 @synthesize scrollView = _scrollView;
 @synthesize activityIndicatorView = _activityIndicatorView;
 
-
 - (id)initWithFrame:(CGRect)frame {
     if(self = [super initWithFrame:frame]) {
         

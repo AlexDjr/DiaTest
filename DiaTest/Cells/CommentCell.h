@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @protocol CommentCellDelegate <NSObject>
-- (void) didSelectLikeButtonInCell: (CommentCell *) cell;
+- (void)didSelectLikeButtonInCell:(CommentCell *)cell;
 @end
 
 NS_ASSUME_NONNULL_END

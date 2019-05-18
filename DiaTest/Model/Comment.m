@@ -10,8 +10,7 @@
 
 @implementation Comment
 
-- (instancetype)initWithServerResponse:(NSDictionary*) responseObject
-{
+- (instancetype)initWithServerResponse:(NSDictionary *) responseObject {
     self = [super initWithServerResponse:responseObject];
     if (self) {
         self.commentId = [responseObject objectForKey:@"id"];

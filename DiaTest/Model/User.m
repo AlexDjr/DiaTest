@@ -10,8 +10,7 @@
 
 @implementation User
 
-- (instancetype)initWithServerResponse:(NSDictionary*) responseObject
-{
+- (instancetype)initWithServerResponse:(NSDictionary *)responseObject {
     self = [super initWithServerResponse:responseObject];
     if (self) {
         self.userId = [[responseObject objectForKey:@"id"] stringValue];

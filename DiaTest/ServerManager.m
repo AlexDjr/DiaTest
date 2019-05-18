@@ -28,7 +28,7 @@
     
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        manager = [[ServerManager alloc] init];
+        manager = [ServerManager new];
     });
     return manager;
 }
@@ -67,7 +67,7 @@
     //    делаем logout
     NSString *urlString = [NSString stringWithFormat: @"https://api.vk.com/oauth/logout"];
     
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] init];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager new];
     [manager GET:urlString
       parameters:nil
          success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
@@ -155,7 +155,6 @@
              
              NSMutableArray *objectsArray = [NSMutableArray array];
              
-             NSInteger i = 0;
              for (NSDictionary *dict in itemsArray) {
                  
                  Post *post = [[Post alloc] initWithServerResponse:dict];
@@ -180,7 +179,6 @@
                  post.commentsCount = [[[dict objectForKey:@"comments"] objectForKey:@"count"] integerValue];
                  
                  [objectsArray addObject:post];
-                 i = i + 1;
              }
              
              if (success) {
@@ -227,7 +225,6 @@
              
              NSMutableArray *objectsArray = [NSMutableArray array];
              
-             NSInteger i = 0;
              for (NSDictionary* dict in itemsArray) {
                  
                  Comment *comment = [[Comment alloc] initWithServerResponse:dict];
@@ -251,7 +248,6 @@
                  comment.canLike = [[[dict objectForKey:@"likes"] objectForKey:@"can_like"] stringValue];
                  
                  [objectsArray addObject:comment];
-                 i = i + 1;
              }
              
              if (success) {

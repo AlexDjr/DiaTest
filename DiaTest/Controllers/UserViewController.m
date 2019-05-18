@@ -227,7 +227,7 @@ static NSInteger postsInRequest = 20;
     [self infiniteScrolling];
     
     //    добавляем рефреш-контрол
-    UIRefreshControl *refresh = [[UIRefreshControl alloc] init];
+    UIRefreshControl *refresh = [UIRefreshControl new];
     [refresh addTarget:self action:@selector(refreshWall) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refresh;
 }
@@ -316,8 +316,8 @@ static NSInteger postsInRequest = 20;
 }
 
 - (void)updateLikesAt:(PostCell *)cell after:(LikeAction)actionType with:(id)result {
-    UIColor *likesColor = [[UIColor alloc] init];
-    UIImage *likesImage = [[UIImage alloc] init];
+    UIColor *likesColor = [UIColor new];
+    UIImage *likesImage = [UIImage new];
     BOOL isLikedByUser = FALSE;
     
     if (actionType == LikeActionDelete) {

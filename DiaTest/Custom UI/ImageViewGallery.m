@@ -34,12 +34,11 @@ CGFloat const imageViewGalleryInset = 5.0;
         self.imageViews = [NSMutableArray array];
         self.imageFrames = [NSMutableArray array];
         
-        int imageIndex = 0;
         for (id image in self.images) {
             
             if ([image isKindOfClass:[Photo class]]) {
                 Photo *photoObject = (Photo *)image;
-                UIImageView *imageView = [[UIImageView alloc] init];
+                UIImageView *imageView = [UIImageView new];
                 
                 NSURLRequest *request = [[NSURLRequest alloc] initWithURL:photoObject.photo604URL];
                 
@@ -49,11 +48,10 @@ CGFloat const imageViewGalleryInset = 5.0;
                                  placeholderImage:nil
                                           success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
                                               weakImageView.image = image;
-                                              [self displayImage:weakImageView withImage:image withImageURL:photoObject.photo2560URL index:imageIndex];
+                                              [self displayImage:weakImageView withImage:image withImageURL:photoObject.photo2560URL];
                                           }
                                           failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
                                           }];
-                imageIndex += 1;
                 [self.imageFrames addObject:photoObject];
                 [self.imageViews addObject:imageView];
                 
@@ -81,16 +79,12 @@ CGFloat const imageViewGalleryInset = 5.0;
     return self;
 }
 
-- (void)displayImage:(UIImageView *)imageView withImage:(UIImage *)image  withImageURL:(NSURL *)imageURL index:(NSInteger)index {
-    
+- (void)displayImage:(UIImageView *)imageView withImage:(UIImage *)image  withImageURL:(NSURL *)imageURL {
+    NSInteger imageIndex = [self.images indexOfObject:image];
     [imageView setImage:image];
     imageView.contentMode = UIViewContentModeScaleAspectFill;
     
-    [imageView setupImageViewerWithDatasource:self initialIndex:index onOpen:^{
-        
-    } onClose:^{
-        
-    }];
+    [imageView setupImageViewerWithDatasource:self initialIndex:imageIndex onOpen:nil onClose:nil];
 }
 
 
@@ -102,7 +96,7 @@ CGFloat const imageViewGalleryInset = 5.0;
 - (NSURL *)imageURLAtIndex:(NSInteger)index imageViewer:(MHFacebookImageViewer *)imageViewer {
     if ([[self.images objectAtIndex:index] isKindOfClass:[Photo class]]) {
         Photo *photoObject = [self.images objectAtIndex:index];
-        NSURL *photoURL = [[NSURL alloc] init];
+        NSURL *photoURL = [NSURL new];
         
         if (photoObject.photo2560URL) {
             photoURL = photoObject.photo2560URL;
@@ -122,8 +116,8 @@ CGFloat const imageViewGalleryInset = 5.0;
 }
 
 - (void)setFramesForImageViewsToFitSize:(CGSize)frameSize {
-    NSInteger imageIndex = 1;
-    UIImageView *prevImageView = [[UIImageView alloc] init];
+    NSInteger imageIndex = 0;
+    UIImageView *prevImageView = [UIImageView new];
     
     for (UIImageView *imageView in self.imageViews) {
         
@@ -141,31 +135,32 @@ CGFloat const imageViewGalleryInset = 5.0;
             
         } else {
             
-            NSLayoutAnchor *topAnchor = [[NSLayoutAnchor alloc] init];
+            NSLayoutAnchor *topAnchor = [NSLayoutAnchor new];
             NSInteger topAnchorConstant = 0;
-            NSLayoutAnchor *leftAnchor = [[NSLayoutAnchor alloc] init];
+            NSLayoutAnchor *leftAnchor = [NSLayoutAnchor new];
             NSInteger leftAnchorConstant = 0;
             
-            if (imageIndex % 2 && imageIndex == 1) {
-                //    фото 1
+            const BOOL isFirstImage = imageIndex == 0;
+            const BOOL isSecondImage = imageIndex == 1;
+            const BOOL isOddNumberImage = imageIndex % 2 && imageIndex != 1;
+            const BOOL isEvenNumberImage = !(imageIndex % 2) && imageIndex != 2;
+            
+            if (isFirstImage) {
                 topAnchor = self.topAnchor;
                 topAnchorConstant = 0;
                 leftAnchor = self.leftAnchor;
                 leftAnchorConstant = 0;
-            } else if (!(imageIndex % 2) && imageIndex == 2) {
-                //    фото 2
+            } else if (isSecondImage) {
                 topAnchor = self.topAnchor;
                 topAnchorConstant = 0;
                 leftAnchor = prevImageView.rightAnchor;
                 leftAnchorConstant = imageViewGalleryInset;
-            } else if (imageIndex % 2 && imageIndex != 1) {
-                //    фото 3,5,7 ...
+            } else if (isEvenNumberImage) {
                 topAnchor = prevImageView.bottomAnchor;
                 topAnchorConstant = imageViewGalleryInset;
                 leftAnchor = self.leftAnchor;
                 leftAnchorConstant = 0;
-            } else if (!(imageIndex % 2) && imageIndex != 2) {
-                //    фото 4,6,8 ...
+            } else if (isOddNumberImage) {
                 topAnchor = prevImageView.topAnchor;
                 topAnchorConstant = 0;
                 leftAnchor = prevImageView.rightAnchor;

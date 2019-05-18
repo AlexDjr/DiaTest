@@ -191,8 +191,8 @@ static NSInteger commentsInRequest = 20;
 }
 
 - (void)updateLikesAt:(CommentCell *)cell after:(LikeAction)actionType with:(id)result {
-    UIColor *likesColor = [[UIColor alloc] init];
-    UIImage *likesImage = [[UIImage alloc] init];
+    UIColor *likesColor = [UIColor new];
+    UIImage *likesImage = [UIImage new];
     BOOL isLikedByUser = FALSE;
     
     if (actionType == LikeActionDelete) {

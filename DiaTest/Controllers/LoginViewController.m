@@ -36,7 +36,7 @@
     
     //    проверяем, что полученный URL это ответ, содержащий в себе access_token
     if ([[[request URL] description] rangeOfString:@"#access_token="].location != NSNotFound) {
-        AccessToken *token = [[AccessToken alloc] init];
+        AccessToken *token = [AccessToken new];
         
         //    делаем парсинг полученного ответа
         NSString *query = [[request URL] description];
@@ -81,7 +81,7 @@
 
 #pragma mark - Methods
 - (void)setupWebView {
-    UIWebView *webView = [[UIWebView alloc] init];
+    UIWebView *webView = [UIWebView new];
     [self.view addSubview:webView];
     
     webView.translatesAutoresizingMaskIntoConstraints = NO;

@@ -17,7 +17,7 @@
         self.text = [responseObject objectForKey:@"text"];
         self.fromId = [[responseObject objectForKey:@"from_id"] stringValue];
         
-        NSDateFormatter *dateFormater = [[NSDateFormatter alloc] init];
+        NSDateFormatter *dateFormater = [NSDateFormatter new];
         [dateFormater setDateFormat:@"dd MMM yyyy HH:mm"];
         NSDate *dateTime = [NSDate dateWithTimeIntervalSince1970:[[responseObject objectForKey:@"date"] floatValue]];
         NSString *date = [dateFormater stringFromDate:dateTime];

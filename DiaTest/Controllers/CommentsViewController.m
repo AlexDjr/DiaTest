@@ -9,6 +9,7 @@
 #import "CommentsViewController.h"
 #import "ServerManager.h"
 #import "UIImageView+AFNetworking.h"
+#import "Utils.h"
 
 #import "CommentCell.h"
 #import "VKContentCell.h"
@@ -108,52 +109,8 @@ static NSInteger commentsInRequest = 20;
                                 [self.tableView endUpdates];
                             }
                             onFailure:^(NSError *error, NSInteger statusCode) {
-                                NSLog(@"ERROR = %@, code = %ld", [error localizedDescription], statusCode);
+                                [Utils print:error withCode:statusCode];
                             }];
-}
-
-- (void)deleteLikeFrom:(CommentCell *)cell {
-    [self.manager deleteLikeFrom:@"comment"
-                          withID:cell.comment.commentId
-                          onWall:self.wallID
-                            type:@"user"
-                       onSuccess:^(id result) {
-                           for (Comment *comment in self.commentsArray) {
-                               if ([comment isEqual:cell.comment]) {
-                                   NSDictionary *dict = [result objectForKey:@"response"];
-                                   comment.likesCount = [[dict objectForKey:@"likes"] integerValue];
-                                   [cell.likesButton setTitle:[NSString stringWithFormat:@" %ld", comment.likesCount] forState:UIControlStateNormal];
-                                   [cell.likesButton setTitleColor:[UIColor colorWithRed:165.0/255.0 green:169.0/255.0 blue:172.0/255.0 alpha:1.0] forState:UIControlStateNormal];
-                                   [cell.likesButton setImage:[UIImage imageNamed:@"likeDefaultSmall"] forState:UIControlStateNormal];
-                                   cell.comment.isLikedByUser = FALSE;
-                               }
-                           }
-                       }
-                       onFailure:^(NSError *error, NSInteger statusCode) {
-                           NSLog(@"ERROR = %@, code = %ld", [error localizedDescription], statusCode);
-                       }];
-}
-
-- (void)postLikeOn:(CommentCell *)cell {
-    [self.manager postLikeOn:@"comment"
-                      withID:cell.comment.commentId
-                      onWall:self.wallID
-                        type:@"user"
-                   onSuccess:^(id result) {
-                       for (Comment *comment in self.commentsArray) {
-                           if ([comment isEqual:cell.comment]) {
-                               NSDictionary *dict = [result objectForKey:@"response"];
-                               comment.likesCount = [[dict objectForKey:@"likes"] integerValue];
-                               [cell.likesButton setTitle:[NSString stringWithFormat:@" %ld", comment.likesCount] forState:UIControlStateNormal];
-                               [cell.likesButton setTitleColor:[UIColor colorWithRed:78.0/255.0 green:118.0/255.0 blue:161.0/255.0 alpha:1.0] forState:UIControlStateNormal];
-                               [cell.likesButton setImage:[UIImage imageNamed:@"likeSelectedSmall"] forState:UIControlStateNormal];
-                               cell.comment.isLikedByUser = TRUE;
-                           }
-                       }
-                   }
-                   onFailure:^(NSError *error, NSInteger statusCode) {
-                       NSLog(@"ERROR = %@, code = %ld", [error localizedDescription], statusCode);
-                   }];
 }
 
 #pragma mark - Methods
@@ -181,10 +138,10 @@ static NSInteger commentsInRequest = 20;
     //    меняем картинку и цвет текста, в зависимости от того, стоит ли лайк
     if (comment.isLikedByUser) {
         [cell.likesButton setImage:[UIImage imageNamed:@"likeSelectedSmall"] forState:UIControlStateNormal];
-        [cell.likesButton setTitleColor:[UIColor colorWithRed:78.0/255.0 green:118.0/255.0 blue:161.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+        [cell.likesButton setTitleColor:[Utils blueActiveColor] forState:UIControlStateNormal];
     } else {
         [cell.likesButton setImage:[UIImage imageNamed:@"likeDefaultSmall"] forState:UIControlStateNormal];
-        [cell.likesButton setTitleColor:[UIColor colorWithRed:165.0/255.0 green:169.0/255.0 blue:172.0/255.0 alpha:1.0] forState:UIControlStateNormal];
+        [cell.likesButton setTitleColor:[Utils grayDefaultColor] forState:UIControlStateNormal];
     }
     
     [cell setAvatarWith:authorPhotoURL];
@@ -196,13 +153,13 @@ static NSInteger commentsInRequest = 20;
     BOOL isLikedByUser = FALSE;
     
     if (actionType == LikeActionDelete) {
-        likesColor = [UIColor colorWithRed:165.0/255.0 green:169.0/255.0 blue:172.0/255.0 alpha:1.0];
+        likesColor = [Utils grayDefaultColor];
         likesImage = [UIImage imageNamed:@"likeDefaultSmall"];
         isLikedByUser = FALSE;
     }
     
     if (actionType == LikeActionPost) {
-        likesColor = [UIColor colorWithRed:78.0/255.0 green:118.0/255.0 blue:161.0/255.0 alpha:1.0];
+        likesColor = [Utils blueActiveColor];
         likesImage = [UIImage imageNamed:@"likeSelectedSmall"];
         isLikedByUser = TRUE;
     }

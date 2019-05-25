@@ -16,7 +16,7 @@
 
 @property (strong, nonatomic) User *currentUser;
 
-+ (ServerManager *) sharedManager;
++ (ServerManager *)sharedManager;
 
 - (void)authorizeUserWithToken:(AccessToken *)token andCompletion:(void(^)(User *user))completion;
 

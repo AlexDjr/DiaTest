@@ -9,6 +9,7 @@
 #import "VKContentCell.h"
 #import "UIImageView+AFNetworking.h"
 #import "ServerManager.h"
+#import "Utils.h"
 
 @implementation VKContentCell
 
@@ -60,7 +61,7 @@
                       completion(result);
                   }
                   onFailure:^(NSError *error, NSInteger statusCode) {
-                      NSLog(@"ERROR = %@, code = %ld", [error localizedDescription], statusCode);
+                      [Utils print:error withCode:statusCode];
                   }];
     }
     
@@ -73,7 +74,7 @@
                           completion(result);
                       }
                       onFailure:^(NSError *error, NSInteger statusCode) {
-                          NSLog(@"ERROR = %@, code = %ld", [error localizedDescription], statusCode);
+                          [Utils print:error withCode:statusCode];
                       }];
     }
 }

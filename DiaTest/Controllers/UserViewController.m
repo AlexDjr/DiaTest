@@ -10,7 +10,9 @@
 #import "LoginViewController.h"
 #import "CommentsViewController.h"
 #import "ServerManager.h"
+#import "UserViewControllerHelper.h"
 #import "ImageViewGallery.h"
+#import "Utils.h"
 
 #import "UIImageView+AFNetworking.h"
 #import "UIScrollView+SVInfiniteScrolling.h"
@@ -24,27 +26,24 @@
 
 static NSString * const userInfoIdentifier = @"UserInfoCell";
 static NSString * const postCellIdentifier = @"PostCell";
+static NSInteger const postsInRequest = 20;
 
 @interface UserViewController () <PostCellDelegate>
 @property (strong, nonatomic) NSMutableArray *postsArray;
 @property (strong, nonatomic) Post *currentPost;
 @property (strong, nonatomic) ServerManager *manager;
-
-- (IBAction)logoutAction:(UIBarButtonItem *)sender;
+@property (strong, nonatomic) UserViewControllerHelper *helper;
 @end
 
 @implementation UserViewController
-
-static NSInteger postsInRequest = 20;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setupView];
     
-    //    проверяем, авторизован ли юзер
     if (self.user) {
-        [self getUserInfo];
-        [self getPosts];
+        [self obtainUserInfo];
+        [self obtainPosts];
     } else {
         [self login];
     }
@@ -70,55 +69,60 @@ static NSInteger postsInRequest = 20;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
-        
-        UserInfoCell *cell = [tableView dequeueReusableCellWithIdentifier:userInfoIdentifier];
-        if (!cell) {
-            cell = [[UserInfoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:userInfoIdentifier];
+    switch (indexPath.section) {
+        case 0:
+        {
+            UserInfoCell *cell = [tableView dequeueReusableCellWithIdentifier:userInfoIdentifier];
+            if (!cell) {
+                cell = [[UserInfoCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:userInfoIdentifier];
+            }
+            
+            [self setup:cell withUser:self.user];
+            return cell;
+            break;
         }
-        
-        [self setup:cell withUser:self.user];
-        return cell;
-        
-    } else if (indexPath.section == 1) {
-        
-        PostCell *cell = [tableView dequeueReusableCellWithIdentifier:postCellIdentifier];
-        if (!cell) {
-            cell = [[PostCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:postCellIdentifier];
+        case 1:
+        {
+            PostCell *cell = [tableView dequeueReusableCellWithIdentifier:postCellIdentifier];
+            if (!cell) {
+                cell = [[PostCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:postCellIdentifier];
+            }
+            
+            cell.delegate = self;
+            Post *post = [self.postsArray objectAtIndex:indexPath.row];
+            [self setup:cell withPost:post];
+            return cell;
+            break;
         }
-        
-        cell.delegate = self;
-        Post *post = [self.postsArray objectAtIndex:indexPath.row];
-        [self setup:cell withPost:post];
-        return cell;
-        
-    } else {
-        
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-        if (!cell) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
-        }
-        return cell;
+        default:
+            break;
     }
     return nil;
 }
 
 #pragma mark - UITableViewDelegate
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
-        return 128.0;
-    } else {
-        return UITableViewAutomaticDimension;
+    switch (indexPath.section) {
+        case 0:
+            return 128.0;
+            break;
+        default:
+            return UITableViewAutomaticDimension;
+            break;
     }
     return 0.0;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    CGFloat footerHeight = 0.0;
-    if (section == 0) {
-        footerHeight = 15.0;
+    switch (section) {
+        case 0:
+            return 15.0;
+            break;
+        default:
+            return 0.0;
+            break;
     }
-    return footerHeight;
+    return 0.0;
 }
 
 #pragma mark - PostCellDelegate
@@ -159,19 +163,17 @@ static NSInteger postsInRequest = 20;
 }
 
 #pragma mark - API
-- (void)getUserInfo {
+- (void)obtainUserInfo {
     [self.manager getUser:self.user.userId
                 onSuccess:^(User *user) {
-                    self.user = user;
-                    self.navigationItem.title = user.firstName;
-                    [self.tableView reloadData];
+                    [self setupControllerWith:user];
                 }
                 onFailure:^(NSError *error, NSInteger statusCode) {
-                    NSLog(@"ERROR = %@, code = %ld", [error localizedDescription], statusCode);
+                    [Utils print:error withCode:statusCode];
                 }];
 }
 
-- (void)getPosts {
+- (void)obtainPosts {
     if (!self.postsArray) {
         self.postsArray = [NSMutableArray array];
     }
@@ -182,21 +184,13 @@ static NSInteger postsInRequest = 20;
                     count:postsInRequest
                 onSuccess:^(NSArray *posts) {
                     [self.postsArray addObjectsFromArray:posts];
-                    NSMutableArray *newPaths = [NSMutableArray array];
-                    for (int i = (int)[self.postsArray count] - (int)[posts count]; i < [self.postsArray count]; i++) {
-                        [newPaths addObject:[NSIndexPath indexPathForRow:i inSection:1]];
-                    }
-                    [self.tableView beginUpdates];
-                    [self.tableView insertRowsAtIndexPaths:newPaths withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView endUpdates];
-                    
-                    [self.tableView.infiniteScrollingView stopAnimating];
-                    
+                    NSMutableArray * newIndexPaths = [self obtainIndexPathsFor:posts];
+                    [self insertRowsInTableViewAt:newIndexPaths];
+                    [self stopInfiniteScrollingAnimation];
                 }
                 onFailure:^(NSError *error, NSInteger statusCode) {
-                    self.tableView.showsInfiniteScrolling = NO;
-                    [self.tableView.infiniteScrollingView stopAnimating];
-                    NSLog(@"ERROR = %@, code = %ld", [error localizedDescription], statusCode);
+                    [self stopInfiniteScrollingAnimation];
+                    [Utils print:error withCode:statusCode];
                 }];
 }
 
@@ -206,30 +200,23 @@ static NSInteger postsInRequest = 20;
                 wthOffset:0
                     count:MAX(postsInRequest, [self.postsArray count])
                 onSuccess:^(NSArray *posts) {
-                    [self.postsArray removeAllObjects];
-                    [self.postsArray addObjectsFromArray:posts];
-                    [self.tableView reloadData];
-                    
+                    [self reloadTableViewWith:posts];
                     [self.refreshControl endRefreshing];
                 }
                 onFailure:^(NSError *error, NSInteger statusCode) {
-                    NSLog(@"ERROR = %@, code = %ld", [error localizedDescription], statusCode);
                     [self.refreshControl endRefreshing];
+                    [Utils print:error withCode:statusCode];
                 }];
 }
 
 #pragma mark - Methods
 - (void)setupView {
     self.manager = [ServerManager sharedManager];
-    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
-    self.tableView.showsVerticalScrollIndicator = NO;
-    
-    [self infiniteScrolling];
-    
-    //    добавляем рефреш-контрол
-    UIRefreshControl *refresh = [UIRefreshControl new];
-    [refresh addTarget:self action:@selector(refreshWall) forControlEvents:UIControlEventValueChanged];
-    self.refreshControl = refresh;
+    self.helper = [UserViewControllerHelper sharedHelper];
+    [self setupNavController];
+    [self setupTableView];
+    [self addInfiniteScrolling];
+    [self addRefreshControl];
 }
 
 - (void)login {
@@ -237,114 +224,120 @@ static NSInteger postsInRequest = 20;
         [self.manager authorizeUserWithToken:token andCompletion:^(User *user) {
             self.manager.currentUser = user;
             self.user = user;
-            [self getUserInfo];
-            [self getPosts];
+            [self obtainUserInfo];
+            [self obtainPosts];
         }];
     }];
     
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:loginController];
-    UIViewController *mainController = self;
-    [mainController presentViewController:navController animated:YES completion:nil];
+    [self presentController:loginController];
 }
 
 - (void)setup:(UserInfoCell *)cell withUser:(User *)user {
     [cell setAvatarWith:self.user.photoURL200];
     
     if (user) {
-        cell.firstNameLabel.text = user.firstName;
-        cell.lastNameLabel.text = user.lastName;
-        cell.onlineStatusLabel.text = user.isOnline ? @"Онлайн" : @"Оффлайн";
+        [self.helper setupUserInfoTextFor:user inCell:cell];
         if (user.isOnline) {
-            cell.onlineStatusLabel.textColor = [UIColor colorWithRed:78.0/255.0 green:118.0/255.0 blue:161.0/255.0 alpha:1.0];
+            [self.helper setupUserOnlineColorInCell:cell];
         } else {
-            cell.onlineStatusLabel.textColor = [UIColor colorWithRed:165.0/255.0 green:169.0/255.0 blue:172.0/255.0 alpha:1.0];
+            [self.helper setupUserOfflineColorInCell:cell];
         }
     } else {
-        cell.firstNameLabel.text = nil;
-        cell.lastNameLabel.text = nil;
-        cell.onlineStatusLabel.text = nil;
+        [self.helper clearUserInfoTextInCell:cell];
     }
 }
 
 - (void)setup:(PostCell *)cell withPost:(Post*) post {
     cell.post = post;
     
-    NSURL *authorPhotoURL = nil;
-    NSString *authorName = nil;
-    authorName = [NSString stringWithFormat:@"%@ %@", post.user.firstName, post.user.lastName];
-    authorPhotoURL = post.user.photoURL50;
+    [self.helper setupAuthorAvatarInCell:cell];
+    [self.helper setupAutorNameInCell:cell];
+    [self.helper setupPostTextInCell:cell];
+    [self.helper setupPostDateInCell:cell];
     
-    cell.postTextLabel.text = post.text;
-    cell.authorNameLabel.text = authorName;
-    cell.dateLabel.text = post.date;
+    [self.helper setupLikesCountInCell:cell];
+    [self.helper setupCommentsCountInCell:cell];
     
-    //    устанавливаем кол-во лайков и комментов
-    [cell.likesButton setTitle:[NSString stringWithFormat:@"  %ld", post.likesCount] forState:UIControlStateNormal];
-    [cell.commentsButton setTitle:[NSString stringWithFormat:@"  %ld", post.commentsCount] forState:UIControlStateNormal];
+    [self.helper setupLikesImageInCell:cell isLikedByUser:post.isLikedByUser];
+    [self.helper setupLikesColorInCell:cell isLikedByUser:post.isLikedByUser];
     
-    //    меняем картинку и цвет текста, в зависимости от того, стоит ли лайк
-    if (post.isLikedByUser) {
-        [cell.likesButton setImage:[UIImage imageNamed:@"likeSelected"] forState:UIControlStateNormal];
-        [cell.likesButton setTitleColor:[UIColor colorWithRed:78.0/255.0 green:118.0/255.0 blue:161.0/255.0 alpha:1.0] forState:UIControlStateNormal];
-    } else {
-        [cell.likesButton setImage:[UIImage imageNamed:@"likeDefault"] forState:UIControlStateNormal];
-        [cell.likesButton setTitleColor:[UIColor colorWithRed:165.0/255.0 green:169.0/255.0 blue:172.0/255.0 alpha:1.0] forState:UIControlStateNormal];
-    }
-    
-    [cell setAvatarWith:authorPhotoURL];
-    
-    //    удаляем галлерею с фото, если она была
-    if ([cell.contentView viewWithTag:1]) {
-        [[cell.contentView viewWithTag:1] removeFromSuperview];
-        cell.likesButtonTopConstraint.constant = defaultLikesButtonTopConstraintValue;
-    }
-    
-    //    добавляем фото из attachments
-    if ([post.attachment count] > 0) {
-        
-        ImageViewGallery *gallery = [[ImageViewGallery alloc] initWithImageArray:post.attachment];
-        [cell.contentView addSubview:gallery];
-        gallery.translatesAutoresizingMaskIntoConstraints = NO;
-        [gallery.topAnchor constraintEqualToAnchor:cell.postTextLabel.bottomAnchor constant: 5.0].active = YES;
-        [gallery.bottomAnchor constraintEqualToAnchor:cell.likesButton.topAnchor constant: -5.0].active = YES;
-        [gallery.leftAnchor constraintEqualToAnchor:cell.contentView.leftAnchor constant: imageViewGalleryOffset].active = YES;
-        [gallery.rightAnchor constraintEqualToAnchor:cell.contentView.rightAnchor constant: -imageViewGalleryOffset].active = YES;
-        
-        gallery.tag = 1;
-        cell.likesButtonTopConstraint.constant = gallery.frame.size.height + cell.likesButtonTopConstraint.constant + 10.0;
-    }
+    [self.helper setupAttachmentPhotosInCell:cell];
 }
 
 - (void)updateLikesAt:(PostCell *)cell after:(LikeAction)actionType with:(id)result {
-    UIColor *likesColor = [UIColor new];
-    UIImage *likesImage = [UIImage new];
-    BOOL isLikedByUser = FALSE;
+    BOOL isLikedByUser = NO;
     
     if (actionType == LikeActionDelete) {
-        likesColor = [UIColor colorWithRed:165.0/255.0 green:169.0/255.0 blue:172.0/255.0 alpha:1.0];
-        likesImage = [UIImage imageNamed:@"likeDefault"];
-        isLikedByUser = FALSE;
+        isLikedByUser = NO;
+    } else if (actionType == LikeActionPost) {
+        isLikedByUser = YES;
     }
-    
-    if (actionType == LikeActionPost) {
-        likesColor = [UIColor colorWithRed:78.0/255.0 green:118.0/255.0 blue:161.0/255.0 alpha:1.0];
-        likesImage = [UIImage imageNamed:@"likeSelected"];
-        isLikedByUser = TRUE;
-    }
+    cell.post.isLikedByUser = isLikedByUser;
     
     NSDictionary *dict = [result objectForKey:@"response"];
     cell.post.likesCount = [[dict objectForKey:@"likes"] integerValue];
-    [cell.likesButton setTitle:[NSString stringWithFormat:@"  %ld", cell.post.likesCount] forState:UIControlStateNormal];
-    [cell.likesButton setTitleColor:likesColor forState:UIControlStateNormal];
-    [cell.likesButton setImage:likesImage forState:UIControlStateNormal];
-    cell.post.isLikedByUser = isLikedByUser;
+    
+    [self.helper setupLikesCountInCell:cell];
+    [self.helper setupLikesColorInCell:cell isLikedByUser:isLikedByUser];
+    [self.helper setupLikesImageInCell:cell isLikedByUser:isLikedByUser];
 }
 
-- (void)infiniteScrolling {
+- (void)setupControllerWith:(User *)user {
+    self.user = user;
+    self.navigationItem.title = user.firstName;
+    [self.tableView reloadData];
+}
+
+- (void)setupTableView {
+    self.tableView.showsVerticalScrollIndicator = NO;
+}
+
+- (void)setupNavController {
+    self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
+}
+
+- (void)addInfiniteScrolling {
     __weak UserViewController *weakSelf = self;
     [self.tableView addInfiniteScrollingWithActionHandler:^{
-        [weakSelf getPosts];
+        [weakSelf obtainPosts];
     }];
+}
+
+- (void)addRefreshControl {
+    UIRefreshControl *refresh = [UIRefreshControl new];
+    [refresh addTarget:self action:@selector(refreshWall) forControlEvents:UIControlEventValueChanged];
+    self.refreshControl = refresh;
+}
+
+- (void)insertRowsInTableViewAt:(NSMutableArray *)paths {
+    [self.tableView beginUpdates];
+    [self.tableView insertRowsAtIndexPaths:paths withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView endUpdates];
+}
+
+- (void)presentController:(LoginViewController *)loginController {
+    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:loginController];
+    UIViewController *mainController = self;
+    [mainController presentViewController:navController animated:YES completion:nil];
+}
+
+- (NSMutableArray *)obtainIndexPathsFor:(NSArray *)posts {
+    NSMutableArray *indexPaths = [NSMutableArray array];
+    for (int i = (int)(self.postsArray.count - posts.count); i < self.postsArray.count; i++) {
+        [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:1]];
+    }
+    return indexPaths;
+}
+
+- (void)stopInfiniteScrollingAnimation {
+    //    self.tableView.showsInfiniteScrolling = NO;
+    [self.tableView.infiniteScrollingView stopAnimating];
+}
+
+- (void)reloadTableViewWith:(NSArray *)posts {
+    [self.postsArray removeAllObjects];
+    [self.postsArray addObjectsFromArray:posts];
+    [self.tableView reloadData];
 }
 
 # pragma mark - Actions

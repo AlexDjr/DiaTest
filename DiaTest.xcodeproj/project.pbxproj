@@ -31,6 +31,8 @@
 		FAD614A12288757F003DDD9C /* UIScrollView+SVInfiniteScrolling.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD614A02288757F003DDD9C /* UIScrollView+SVInfiniteScrolling.m */; };
 		FADC0924228B2CF9002DD8AD /* ImageViewGallery.m in Sources */ = {isa = PBXBuildFile; fileRef = FADC0923228B2CF9002DD8AD /* ImageViewGallery.m */; };
 		FADC0928228B2D18002DD8AD /* MHFacebookImageViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = FADC0926228B2D18002DD8AD /* MHFacebookImageViewer.m */; };
+		FAEB7645229873FB00996CFA /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEB7644229873FB00996CFA /* Utils.m */; };
+		FAEB764A2299930400996CFA /* UserViewControllerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEB76492299930400996CFA /* UserViewControllerHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -81,6 +83,10 @@
 		FADC0923228B2CF9002DD8AD /* ImageViewGallery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageViewGallery.m; sourceTree = "<group>"; };
 		FADC0926228B2D18002DD8AD /* MHFacebookImageViewer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MHFacebookImageViewer.m; sourceTree = "<group>"; };
 		FADC0927228B2D18002DD8AD /* MHFacebookImageViewer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHFacebookImageViewer.h; sourceTree = "<group>"; };
+		FAEB7644229873FB00996CFA /* Utils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
+		FAEB76462298740B00996CFA /* Utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
+		FAEB7648229992EE00996CFA /* UserViewControllerHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserViewControllerHelper.h; sourceTree = "<group>"; };
+		FAEB76492299930400996CFA /* UserViewControllerHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserViewControllerHelper.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +143,8 @@
 				FA7B723822848B1700B3F031 /* AppDelegate.m */,
 				FA7B725022848DD500B3F031 /* ServerManager.h */,
 				FA7B725122848DD500B3F031 /* ServerManager.m */,
+				FAEB76462298740B00996CFA /* Utils.h */,
+				FAEB7644229873FB00996CFA /* Utils.m */,
 				FA7B725322848E0F00B3F031 /* Model */,
 				FAD614862286EDCF003DDD9C /* Cells */,
 				FA7B724F22848D7B00B3F031 /* Controllers */,
@@ -155,6 +163,7 @@
 		FA7B724F22848D7B00B3F031 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				FAEB764B2299930700996CFA /* Helpers */,
 				FA7B723A22848B1700B3F031 /* UserViewController.h */,
 				FA7B723B22848B1700B3F031 /* UserViewController.m */,
 				FAD614802286C193003DDD9C /* LoginViewController.h */,
@@ -234,6 +243,15 @@
 				FADC0923228B2CF9002DD8AD /* ImageViewGallery.m */,
 			);
 			path = "Custom UI";
+			sourceTree = "<group>";
+		};
+		FAEB764B2299930700996CFA /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				FAEB7648229992EE00996CFA /* UserViewControllerHelper.h */,
+				FAEB76492299930400996CFA /* UserViewControllerHelper.m */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -333,6 +351,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA7B726622848E0F00B3F031 /* Photo.m in Sources */,
+				FAEB764A2299930400996CFA /* UserViewControllerHelper.m in Sources */,
 				FA7B725222848DD500B3F031 /* ServerManager.m in Sources */,
 				FAD614822286C193003DDD9C /* LoginViewController.m in Sources */,
 				FA7B723C22848B1700B3F031 /* UserViewController.m in Sources */,
@@ -349,6 +368,7 @@
 				FAD614892286F164003DDD9C /* PostCell.m in Sources */,
 				FA7B726722848E0F00B3F031 /* ServerObject.m in Sources */,
 				FA7B726B22848E0F00B3F031 /* AccessToken.m in Sources */,
+				FAEB7645229873FB00996CFA /* Utils.m in Sources */,
 				FAD6149B22873EB1003DDD9C /* CommentCell.m in Sources */,
 				FAD6149822873E56003DDD9C /* Group.m in Sources */,
 				FAD614A12288757F003DDD9C /* UIScrollView+SVInfiniteScrolling.m in Sources */,

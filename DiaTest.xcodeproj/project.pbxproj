@@ -33,6 +33,7 @@
 		FADC0928228B2D18002DD8AD /* MHFacebookImageViewer.m in Sources */ = {isa = PBXBuildFile; fileRef = FADC0926228B2D18002DD8AD /* MHFacebookImageViewer.m */; };
 		FAEB7645229873FB00996CFA /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEB7644229873FB00996CFA /* Utils.m */; };
 		FAEB764A2299930400996CFA /* UserViewControllerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEB76492299930400996CFA /* UserViewControllerHelper.m */; };
+		FAEB764D2299D41D00996CFA /* CommentsViewControllerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEB764C2299D41D00996CFA /* CommentsViewControllerHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,6 +88,8 @@
 		FAEB76462298740B00996CFA /* Utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 		FAEB7648229992EE00996CFA /* UserViewControllerHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserViewControllerHelper.h; sourceTree = "<group>"; };
 		FAEB76492299930400996CFA /* UserViewControllerHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserViewControllerHelper.m; sourceTree = "<group>"; };
+		FAEB764C2299D41D00996CFA /* CommentsViewControllerHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CommentsViewControllerHelper.m; sourceTree = "<group>"; };
+		FAEB764E2299D43300996CFA /* CommentsViewControllerHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CommentsViewControllerHelper.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -250,6 +253,8 @@
 			children = (
 				FAEB7648229992EE00996CFA /* UserViewControllerHelper.h */,
 				FAEB76492299930400996CFA /* UserViewControllerHelper.m */,
+				FAEB764E2299D43300996CFA /* CommentsViewControllerHelper.h */,
+				FAEB764C2299D41D00996CFA /* CommentsViewControllerHelper.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -356,6 +361,7 @@
 				FAD614822286C193003DDD9C /* LoginViewController.m in Sources */,
 				FA7B723C22848B1700B3F031 /* UserViewController.m in Sources */,
 				FAD614852286EDCC003DDD9C /* UserInfoCell.m in Sources */,
+				FAEB764D2299D41D00996CFA /* CommentsViewControllerHelper.m in Sources */,
 				FA7B726A22848E0F00B3F031 /* Comment.m in Sources */,
 				FA7B726522848E0F00B3F031 /* User.m in Sources */,
 				FADC0924228B2CF9002DD8AD /* ImageViewGallery.m in Sources */,

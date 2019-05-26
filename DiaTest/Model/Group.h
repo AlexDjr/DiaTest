@@ -13,13 +13,12 @@
 @property (strong,nonatomic) NSString *desc;
 @property (strong,nonatomic) NSString *activity;
 @property (strong,nonatomic) NSString *name;
-@property (assign,nonatomic) BOOL isClosed;
 @property (assign,nonatomic) BOOL isMember;
 @property (strong,nonatomic) NSURL *photoURL50;
 @property (strong,nonatomic) NSURL *photoURL200;
 @property (strong,nonatomic) NSString *membersCount;
 @property (strong,nonatomic) NSString *status;
 
-- (instancetype)initWithServerResponse:(NSDictionary *)responseObject;
+- (instancetype)initWithServerResponse:(NSDictionary *)response;
 
 @end

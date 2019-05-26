@@ -24,4 +24,6 @@
 @property (strong, nonatomic) NSArray *attachment;
 @property (strong, nonatomic) User *user;
 @property (strong, nonatomic) Group *group;
+
+- (instancetype)initWithServerResponse:(NSDictionary *)response;
 @end

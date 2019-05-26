@@ -22,4 +22,6 @@
 @property (strong, nonatomic) NSString *canLike;
 @property (strong, nonatomic) User *user;
 @property (strong, nonatomic) Group *group;
+
+- (instancetype)initWithServerResponse:(NSDictionary *)response;
 @end

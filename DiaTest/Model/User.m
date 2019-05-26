@@ -9,25 +9,53 @@
 #import "User.h"
 
 @implementation User
-
-- (instancetype)initWithServerResponse:(NSDictionary *)responseObject {
-    self = [super initWithServerResponse:responseObject];
+- (instancetype)initWithServerResponse:(NSDictionary *)response {
+    self = [super initWithServerResponse:response];
     if (self) {
-        self.userId = [[responseObject objectForKey:@"id"] stringValue];
-        self.firstName = [responseObject objectForKey:@"first_name"];
-        self.lastName = [responseObject objectForKey:@"last_name"];
-        self.isOnline = [[responseObject objectForKey:@"online"] boolValue];
-        
-        NSString *urlString50 = [responseObject objectForKey:@"photo_50"];
-        if (urlString50) {
-            self.photoURL50 = [NSURL URLWithString:urlString50];
-        }
-        NSString *urlString200 = [responseObject objectForKey:@"photo_200"];
-        if (urlString200) {
-            self.photoURL200 = [NSURL URLWithString:urlString200];
-        }
+        [self setupFromResponse:response];
     }
     return self;
 }
 
+#pragma mark - Methods
+- (void)setupFromResponse:(NSDictionary *)response {
+    self.userId = [self userIdFromResponse:response];
+    self.firstName = [self firstNameFromResponse:response];
+    self.lastName = [self lastNameFromResponse:response];
+    self.isOnline = [self isOnlineFromResponse:response];
+    self.photoURL50 = [self photoURL50FromResponse:response];
+    self.photoURL200 = [self photoURL200FromResponse:response];
+}
+
+- (NSString *)userIdFromResponse:(NSDictionary *)response {
+    return [[response objectForKey:@"id"] stringValue];
+}
+
+- (NSString *)firstNameFromResponse:(NSDictionary *)response {
+    return [response objectForKey:@"first_name"];
+}
+
+- (NSString *)lastNameFromResponse:(NSDictionary *)response {
+    return [response objectForKey:@"last_name"];
+}
+
+- (BOOL)isOnlineFromResponse:(NSDictionary *)response {
+    return [[response objectForKey:@"online"] boolValue];
+}
+
+- (NSURL *)photoURL50FromResponse:(NSDictionary *)response {
+    NSString *urlString50 = [response objectForKey:@"photo_50"];
+    if (urlString50) {
+        return [NSURL URLWithString:urlString50];
+    }
+    return nil;
+}
+
+- (NSURL *)photoURL200FromResponse:(NSDictionary *)response {
+    NSString *urlString200 = [response objectForKey:@"photo_200"];
+    if (urlString200) {
+        return [NSURL URLWithString:urlString200];
+    }
+    return nil;
+}
 @end

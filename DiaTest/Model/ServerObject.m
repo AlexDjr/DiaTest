@@ -9,7 +9,6 @@
 #import "ServerObject.h"
 
 @implementation ServerObject
-
 - (id)initWithServerResponse:(NSDictionary *)responseObject {
     self = [super init];
     if (self) {
@@ -17,5 +16,4 @@
     }
     return self;
 }
-
 @end

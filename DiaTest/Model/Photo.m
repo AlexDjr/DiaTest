@@ -9,41 +9,87 @@
 #import "Photo.h"
 
 @implementation Photo
-
-- (instancetype)initWithServerResponse:(NSDictionary *)responseObject {
+- (instancetype)initWithServerResponse:(NSDictionary *)response {
     
     self = [super init];
     if (self) {
-        NSArray *sizesArray = [responseObject objectForKey:@"sizes"];
-        
-        for (NSDictionary *dict in sizesArray) {
-            if ([[dict objectForKey:@"type"] isEqualToString:@"s"]) {
-                self.photo75URL = [NSURL URLWithString:[dict objectForKey:@"url"]];
-                self.photo75size = CGSizeMake([[dict objectForKey:@"width"] integerValue], [[dict objectForKey:@"height"] integerValue]);
-            }
-            if ([[dict objectForKey:@"type"] isEqualToString:@"m"]) {
-                self.photo130URL= [NSURL URLWithString:[dict objectForKey:@"url"]];
-                self.photo130size = CGSizeMake([[dict objectForKey:@"width"] integerValue], [[dict objectForKey:@"height"] integerValue]);
-            }
-            if ([[dict objectForKey:@"type"] isEqualToString:@"x"]) {
-                self.photo604URL = [NSURL URLWithString:[dict objectForKey:@"url"]];
-                self.photo604size = CGSizeMake([[dict objectForKey:@"width"] integerValue], [[dict objectForKey:@"height"] integerValue]);
-            }
-            if ([[dict objectForKey:@"type"] isEqualToString:@"y"]) {
-                self.photo807URL = [NSURL URLWithString:[dict objectForKey:@"url"]];
-                self.photo807size = CGSizeMake([[dict objectForKey:@"width"] integerValue], [[dict objectForKey:@"height"] integerValue]);
-            }
-            if ([[dict objectForKey:@"type"] isEqualToString:@"z"]) {
-                self.photo1280URL = [NSURL URLWithString:[dict objectForKey:@"url"]];
-                self.photo1280size = CGSizeMake([[dict objectForKey:@"width"] integerValue], [[dict objectForKey:@"height"] integerValue]);
-            }
-            if ([[dict objectForKey:@"type"] isEqualToString:@"w"]) {
-                self.photo2560URL = [NSURL URLWithString:[dict objectForKey:@"url"]];
-                self.photo2560size = CGSizeMake([[dict objectForKey:@"width"] integerValue], [[dict objectForKey:@"height"] integerValue]);
-            }
-        }
+        [self setupFromResponse:response];
     }
     return self;
 }
 
+#pragma mark - Methods
+- (void)setupFromResponse:(NSDictionary *)response {
+    self.photo75URL = [self photoURLForHeight:75 fromResponse:response];
+    self.photo75size = [self photoSizeForHeight:75 fromResponse:response];
+    self.photo130URL = [self photoURLForHeight:130 fromResponse:response];
+    self.photo130size = [self photoSizeForHeight:130 fromResponse:response];
+    self.photo604URL = [self photoURLForHeight:604 fromResponse:response];
+    self.photo604size = [self photoSizeForHeight:604 fromResponse:response];
+    self.photo807URL = [self photoURLForHeight:807 fromResponse:response];
+    self.photo807size = [self photoSizeForHeight:807 fromResponse:response];
+    self.photo1280URL = [self photoURLForHeight:1280 fromResponse:response];
+    self.photo1280size = [self photoSizeForHeight:1280 fromResponse:response];
+    self.photo2560URL = [self photoURLForHeight:2560 fromResponse:response];
+    self.photo2560size = [self photoSizeForHeight:2560 fromResponse:response];
+}
+
+- (NSString *)typeStringForHeight:(NSInteger)height {
+    NSString *typeString = @"";
+    switch (height) {
+        case 75:
+            typeString = @"s";
+            break;
+        case 130:
+            typeString = @"m";
+            break;
+        case 604:
+            typeString = @"x";
+            break;
+        case 807:
+            typeString = @"y";
+            break;
+        case 1280:
+            typeString = @"z";
+            break;
+        case 2560:
+            typeString = @"w";
+            break;
+            
+        default:
+            break;
+    }
+    
+    return typeString;
+}
+
+- (NSURL *)photoURLForHeight:(NSInteger)height fromResponse:(NSDictionary *)response {
+    NSString *typeString = [self typeStringForHeight:height];
+    if (!typeString) {
+        return nil;
+    }
+    NSURL *photoURL = nil;
+    NSArray *sizes = [response objectForKey:@"sizes"];
+    for (NSDictionary *sizeDictionary in sizes) {
+        if ([[sizeDictionary objectForKey:@"type"] isEqualToString:typeString]) {
+            photoURL = [NSURL URLWithString:[sizeDictionary objectForKey:@"url"]];
+        }
+    }
+    return photoURL;
+}
+
+- (CGSize)photoSizeForHeight:(NSInteger)height fromResponse:(NSDictionary *)response {
+    NSString *typeString = [self typeStringForHeight:height];
+    if (!typeString) {
+        return CGSizeZero;
+    }
+    CGSize photoSize = CGSizeZero;
+    NSArray *sizes = [response objectForKey:@"sizes"];
+    for (NSDictionary *sizeDictionary in sizes) {
+        if ([[sizeDictionary objectForKey:@"type"] isEqualToString:typeString]) {
+            photoSize = CGSizeMake([[sizeDictionary objectForKey:@"width"] integerValue], [[sizeDictionary objectForKey:@"height"] integerValue]);
+        }
+    }
+    return photoSize;
+}
 @end

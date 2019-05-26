@@ -16,4 +16,6 @@
 @property (assign,nonatomic) BOOL isOnline;
 @property (strong,nonatomic) NSURL *photoURL50;
 @property (strong,nonatomic) NSURL *photoURL200;
+
+- (instancetype)initWithServerResponse:(NSDictionary *)response;
 @end

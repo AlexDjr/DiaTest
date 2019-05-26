@@ -21,6 +21,7 @@
 		FA7B726822848E0F00B3F031 /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7B725C22848E0F00B3F031 /* Post.m */; };
 		FA7B726A22848E0F00B3F031 /* Comment.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7B726122848E0F00B3F031 /* Comment.m */; };
 		FA7B726B22848E0F00B3F031 /* AccessToken.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7B726222848E0F00B3F031 /* AccessToken.m */; };
+		FAA11F10229AA9D500B87039 /* ServerManagerHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA11F0F229AA9D500B87039 /* ServerManagerHelper.m */; };
 		FAD614822286C193003DDD9C /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD614812286C193003DDD9C /* LoginViewController.m */; };
 		FAD614852286EDCC003DDD9C /* UserInfoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD614842286EDCC003DDD9C /* UserInfoCell.m */; };
 		FAD614892286F164003DDD9C /* PostCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD614882286F164003DDD9C /* PostCell.m */; };
@@ -50,8 +51,8 @@
 		FA7B724522848B1900B3F031 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FA7B724622848B1900B3F031 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		FA7B724D22848C6600B3F031 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
-		FA7B725022848DD500B3F031 /* ServerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerManager.h; sourceTree = "<group>"; };
-		FA7B725122848DD500B3F031 /* ServerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerManager.m; sourceTree = "<group>"; };
+		FA7B725022848DD500B3F031 /* ServerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ServerManager.h; path = ../ServerManager.h; sourceTree = "<group>"; };
+		FA7B725122848DD500B3F031 /* ServerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ServerManager.m; path = ../ServerManager.m; sourceTree = "<group>"; };
 		FA7B725522848E0F00B3F031 /* Post.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Post.h; sourceTree = "<group>"; };
 		FA7B725622848E0F00B3F031 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		FA7B725722848E0F00B3F031 /* Comment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Comment.h; sourceTree = "<group>"; };
@@ -64,6 +65,8 @@
 		FA7B726122848E0F00B3F031 /* Comment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Comment.m; sourceTree = "<group>"; };
 		FA7B726222848E0F00B3F031 /* AccessToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccessToken.m; sourceTree = "<group>"; };
 		FA7B726322848E0F00B3F031 /* ServerObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerObject.h; sourceTree = "<group>"; };
+		FAA11F0E229AA9C200B87039 /* ServerManagerHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServerManagerHelper.h; sourceTree = "<group>"; };
+		FAA11F0F229AA9D500B87039 /* ServerManagerHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ServerManagerHelper.m; sourceTree = "<group>"; };
 		FAD614802286C193003DDD9C /* LoginViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		FAD614812286C193003DDD9C /* LoginViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		FAD614832286EDCC003DDD9C /* UserInfoCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserInfoCell.h; sourceTree = "<group>"; };
@@ -144,10 +147,9 @@
 			children = (
 				FA7B723722848B1700B3F031 /* AppDelegate.h */,
 				FA7B723822848B1700B3F031 /* AppDelegate.m */,
-				FA7B725022848DD500B3F031 /* ServerManager.h */,
-				FA7B725122848DD500B3F031 /* ServerManager.m */,
 				FAEB76462298740B00996CFA /* Utils.h */,
 				FAEB7644229873FB00996CFA /* Utils.m */,
+				FAEB764F229AA95200996CFA /* Network */,
 				FA7B725322848E0F00B3F031 /* Model */,
 				FAD614862286EDCF003DDD9C /* Cells */,
 				FA7B724F22848D7B00B3F031 /* Controllers */,
@@ -257,6 +259,17 @@
 				FAEB764C2299D41D00996CFA /* CommentsViewControllerHelper.m */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		FAEB764F229AA95200996CFA /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				FA7B725022848DD500B3F031 /* ServerManager.h */,
+				FA7B725122848DD500B3F031 /* ServerManager.m */,
+				FAA11F0E229AA9C200B87039 /* ServerManagerHelper.h */,
+				FAA11F0F229AA9D500B87039 /* ServerManagerHelper.m */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -373,6 +386,7 @@
 				FA7B723922848B1700B3F031 /* AppDelegate.m in Sources */,
 				FAD614892286F164003DDD9C /* PostCell.m in Sources */,
 				FA7B726722848E0F00B3F031 /* ServerObject.m in Sources */,
+				FAA11F10229AA9D500B87039 /* ServerManagerHelper.m in Sources */,
 				FA7B726B22848E0F00B3F031 /* AccessToken.m in Sources */,
 				FAEB7645229873FB00996CFA /* Utils.m in Sources */,
 				FAD6149B22873EB1003DDD9C /* CommentCell.m in Sources */,

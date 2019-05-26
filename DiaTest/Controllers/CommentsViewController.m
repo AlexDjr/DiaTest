@@ -94,7 +94,7 @@ static NSInteger const commentsInRequest = 20;
         self.commentsArray = [NSMutableArray array];
     }
     
-    [self.manager getCommentsFromPost:self.post.postId
+    [self.manager obtainCommentsFromPost:self.post.postId
                                onWall:self.wallID
                                  type:@"user"
                             wthOffset:[self.commentsArray count]

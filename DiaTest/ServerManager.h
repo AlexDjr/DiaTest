@@ -13,7 +13,6 @@
 @class Group;
 
 @interface ServerManager : NSObject
-
 @property (strong, nonatomic) User *currentUser;
 
 + (ServerManager *)sharedManager;
@@ -22,24 +21,24 @@
 
 - (void)logoutWithCompletion:(void(^)(void))completion;
 
-- (void)getWall:(NSString *)ownerID
-           type:(NSString *)wallType
-      wthOffset:(NSInteger)offset
-          count:(NSInteger)count
-      onSuccess:(void(^)(NSArray* posts))success
-      onFailure:(void(^)(NSError *error, NSInteger statusCode))failure;
+- (void)obtainWall:(NSString *)ownerID
+              type:(NSString *)wallType
+         wthOffset:(NSInteger)offset
+             count:(NSInteger)count
+         onSuccess:(void(^)(NSArray* posts))success
+         onFailure:(void(^)(NSError *error, NSInteger statusCode))failure;
 
-- (void)getCommentsFromPost:(NSString *)postID
-                     onWall:(NSString *)ownerID
-                       type:(NSString *)wallType
-                  wthOffset:(NSInteger)offset
-                      count:(NSInteger)count
-                  onSuccess:(void(^)(NSArray *comments))success
-                  onFailure:(void(^)(NSError *error, NSInteger statusCode))failure;
+- (void)obtainCommentsFromPost:(NSString *)postID
+                        onWall:(NSString *)ownerID
+                          type:(NSString *)wallType
+                     wthOffset:(NSInteger)offset
+                         count:(NSInteger)count
+                     onSuccess:(void(^)(NSArray *comments))success
+                     onFailure:(void(^)(NSError *error, NSInteger statusCode))failure;
 
-- (void)getUser:(NSString *)userID
-      onSuccess:(void(^)(User *user))success
-      onFailure:(void(^)(NSError *error, NSInteger statusCode))failure ;
+- (void)obtainUser:(NSString *)userID
+         onSuccess:(void(^)(User *user))success
+         onFailure:(void(^)(NSError *error, NSInteger statusCode))failure ;
 
 - (void)postLikeOn:(NSString *)contentType
             withID:(NSString *)itemID

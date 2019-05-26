@@ -22,6 +22,10 @@
         NSDate *dateTime = [NSDate dateWithTimeIntervalSince1970:[[responseObject objectForKey:@"date"] floatValue]];
         NSString *date = [dateFormater stringFromDate:dateTime];
         self.date = date;
+        
+        self.likesCount = [[[responseObject objectForKey:@"likes"] objectForKey:@"count"] integerValue];
+        self.isLikedByUser = [[[responseObject objectForKey:@"likes"] objectForKey:@"user_likes"] boolValue];
+        self.canLike = [[[responseObject objectForKey:@"likes"] objectForKey:@"can_like"] stringValue];
     }
     return self;
 }

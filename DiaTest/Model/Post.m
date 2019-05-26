@@ -39,6 +39,11 @@
         
         self.attachment = tempImageArray;
         
+        self.likesCount = [[[responseObject objectForKey:@"likes"] objectForKey:@"count"] integerValue];
+        self.isLikedByUser = [[[responseObject objectForKey:@"likes"] objectForKey:@"user_likes"] boolValue];
+        self.canLike = [[[responseObject objectForKey:@"likes"] objectForKey:@"can_like"] stringValue];
+        self.commentsCount = [[[responseObject objectForKey:@"comments"] objectForKey:@"count"] integerValue];
+        
     }
     return self;
 }

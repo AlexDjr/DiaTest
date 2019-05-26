@@ -164,13 +164,13 @@ static NSInteger const postsInRequest = 20;
 
 #pragma mark - API
 - (void)obtainUserInfo {
-    [self.manager getUser:self.user.userId
-                onSuccess:^(User *user) {
-                    [self setupControllerWith:user];
-                }
-                onFailure:^(NSError *error, NSInteger statusCode) {
-                    [Utils print:error withCode:statusCode];
-                }];
+    [self.manager obtainUser:self.user.userId
+                   onSuccess:^(User *user) {
+                       [self setupControllerWith:user];
+                   }
+                   onFailure:^(NSError *error, NSInteger statusCode) {
+                       [Utils print:error withCode:statusCode];
+                   }];
 }
 
 - (void)obtainPosts {
@@ -178,35 +178,35 @@ static NSInteger const postsInRequest = 20;
         self.postsArray = [NSMutableArray array];
     }
     
-    [self.manager getWall:self.user.userId
-                     type:@"user"
-                wthOffset:[self.postsArray count]
-                    count:postsInRequest
-                onSuccess:^(NSArray *posts) {
-                    [self.postsArray addObjectsFromArray:posts];
-                    NSMutableArray * newIndexPaths = [self obtainIndexPathsFor:posts];
-                    [self insertRowsInTableViewAt:newIndexPaths];
-                    [self stopInfiniteScrollingAnimation];
-                }
-                onFailure:^(NSError *error, NSInteger statusCode) {
-                    [self stopInfiniteScrollingAnimation];
-                    [Utils print:error withCode:statusCode];
-                }];
+    [self.manager obtainWall:self.user.userId
+                        type:@"user"
+                   wthOffset:[self.postsArray count]
+                       count:postsInRequest
+                   onSuccess:^(NSArray *posts) {
+                       [self.postsArray addObjectsFromArray:posts];
+                       NSMutableArray * newIndexPaths = [self obtainIndexPathsFor:posts];
+                       [self insertRowsInTableViewAt:newIndexPaths];
+                       [self stopInfiniteScrollingAnimation];
+                   }
+                   onFailure:^(NSError *error, NSInteger statusCode) {
+                       [self stopInfiniteScrollingAnimation];
+                       [Utils print:error withCode:statusCode];
+                   }];
 }
 
 - (void)refreshWall {
-    [self.manager getWall:self.user.userId
-                     type:@"user"
-                wthOffset:0
-                    count:MAX(postsInRequest, [self.postsArray count])
-                onSuccess:^(NSArray *posts) {
-                    [self reloadTableViewWith:posts];
-                    [self.refreshControl endRefreshing];
-                }
-                onFailure:^(NSError *error, NSInteger statusCode) {
-                    [self.refreshControl endRefreshing];
-                    [Utils print:error withCode:statusCode];
-                }];
+    [self.manager obtainWall:self.user.userId
+                        type:@"user"
+                   wthOffset:0
+                       count:MAX(postsInRequest, [self.postsArray count])
+                   onSuccess:^(NSArray *posts) {
+                       [self reloadTableViewWith:posts];
+                       [self.refreshControl endRefreshing];
+                   }
+                   onFailure:^(NSError *error, NSInteger statusCode) {
+                       [self.refreshControl endRefreshing];
+                       [Utils print:error withCode:statusCode];
+                   }];
 }
 
 #pragma mark - Methods

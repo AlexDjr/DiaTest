@@ -12,7 +12,6 @@
 #import "Utils.h"
 
 @implementation VKContentCell
-
 - (void)awakeFromNib {
     [super awakeFromNib];
     [self setupAvatarImageView];
@@ -22,31 +21,17 @@
     [super setSelected:selected animated:animated];
 }
 
-#pragma mark - Private Methods
-- (void)setupAvatarImageView {
-    CALayer *imageLayer = self.avatarImageView.layer;
-    CGFloat radius = self.avatarImageView.frame.size.height / 2;
-    [imageLayer setCornerRadius:radius];
-    [imageLayer setBounds:CGRectMake(0.0f, 0.0f, radius *2, radius *2)];
-    [imageLayer setMasksToBounds:YES];
-}
-
 #pragma mark - Public Methods
 - (void)setAvatarWith:(NSURL *)url {
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
     
     __weak VKContentCell *weakCell = self;
-    
     [self.avatarImageView setImageWithURLRequest:request
                                 placeholderImage:nil
                                          success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                             
                                              weakCell.avatarImageView.image = image;
-                                             
                                          }
-                                         failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                             
-                                         }];
+                                         failure:nil];
 }
 
 - (void)changeLikeWith:(LikeAction)actionType on:(NSString *)contentType withId:(NSString *)contentId onWall:(NSString *)wallId withCompletion:(void(^)(id result))completion {
@@ -77,6 +62,15 @@
                           [Utils print:error withCode:statusCode];
                       }];
     }
+}
+
+#pragma mark - Private Methods
+- (void)setupAvatarImageView {
+    CALayer *imageLayer = self.avatarImageView.layer;
+    CGFloat radius = self.avatarImageView.frame.size.height / 2;
+    [imageLayer setCornerRadius:radius];
+    [imageLayer setBounds:CGRectMake(0.0f, 0.0f, radius *2, radius *2)];
+    [imageLayer setMasksToBounds:YES];
 }
 
 @end

@@ -8,8 +8,6 @@
 
 #import "PostCell.h"
 
-CGFloat const defaultLikesButtonTopConstraintValue = 9.0;
-
 @implementation PostCell
 
 - (void)awakeFromNib {

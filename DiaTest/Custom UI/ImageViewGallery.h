@@ -7,15 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+@class Photo;
 
 @interface ImageViewGallery : UIView
-extern CGFloat const imageViewGalleryOffset;
-extern CGFloat const imageViewGalleryInset;
-
 @property (nonatomic, strong) NSArray *images;
-@property (nonatomic, strong) NSMutableArray *imageViews;
-@property (nonatomic, strong) NSMutableArray *imageFrames;
+@property (nonatomic, strong) NSArray *imageViews;
+@property (nonatomic, assign) CGFloat galleryOffset;
 
-- (instancetype)initWithImageArray:(NSArray *)images;
-
+- (instancetype)initWithImages:(NSArray *)images;
 @end

@@ -21,7 +21,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UIButton *likesButton;
 @property (weak, nonatomic) IBOutlet UIButton *commentsButton;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *likesButtonTopConstraint;
-extern CGFloat const defaultLikesButtonTopConstraintValue;
 
 @property (strong, nonatomic) Post *post;
 @property (weak, nonatomic) id <PostCellDelegate> delegate;

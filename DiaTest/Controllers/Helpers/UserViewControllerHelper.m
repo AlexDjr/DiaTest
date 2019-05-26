@@ -17,6 +17,8 @@
 #import "UserInfoCell.h"
 #import "PostCell.h"
 
+static CGFloat const defaultLikesButtonTopConstraintValue = 9.0;
+
 @implementation UserViewControllerHelper
 + (UserViewControllerHelper*)sharedHelper {
     static UserViewControllerHelper *helper = nil;
@@ -104,13 +106,13 @@
 
 - (void)addImageGalleryToCell:(PostCell *)cell {
     if ([cell.post.attachment count] > 0) {
-        ImageViewGallery *gallery = [[ImageViewGallery alloc] initWithImageArray:cell.post.attachment];
+        ImageViewGallery *gallery = [[ImageViewGallery alloc] initWithImages:cell.post.attachment];
         [cell.contentView addSubview:gallery];
         gallery.translatesAutoresizingMaskIntoConstraints = NO;
         [gallery.topAnchor constraintEqualToAnchor:cell.postTextLabel.bottomAnchor constant: 5.0].active = YES;
         [gallery.bottomAnchor constraintEqualToAnchor:cell.likesButton.topAnchor constant: -5.0].active = YES;
-        [gallery.leftAnchor constraintEqualToAnchor:cell.contentView.leftAnchor constant: imageViewGalleryOffset].active = YES;
-        [gallery.rightAnchor constraintEqualToAnchor:cell.contentView.rightAnchor constant: -imageViewGalleryOffset].active = YES;
+        [gallery.leftAnchor constraintEqualToAnchor:cell.contentView.leftAnchor constant: gallery.galleryOffset].active = YES;
+        [gallery.rightAnchor constraintEqualToAnchor:cell.contentView.rightAnchor constant: -gallery.galleryOffset].active = YES;
         gallery.tag = 1;
         
         [self setupConstraintsAfterAddImageGallery:gallery InCell:cell];

@@ -12,8 +12,7 @@
 
 #import "Photo.h"
 
-CGFloat const imageViewGalleryOffset = 9.0;
-CGFloat const imageViewGalleryInset = 5.0;
+static CGFloat const galleryInset = 5.0;
 
 @interface ImageViewGallery () <MHFacebookImageViewerDatasource>
 @property (strong,nonatomic) UIScrollView *contentView;
@@ -21,77 +20,18 @@ CGFloat const imageViewGalleryInset = 5.0;
 
 @implementation ImageViewGallery
 
-- (instancetype)initWithImageArray:(NSArray *)images {
-    
+- (instancetype)initWithImages:(NSArray *)images {
     self = [super init];
     if (self) {
-        self.images = images;
-        
-        [self addSubview:self.contentView];
-        
-        [self.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-        
-        self.imageViews = [NSMutableArray array];
-        self.imageFrames = [NSMutableArray array];
-        
-        for (id image in self.images) {
-            
-            if ([image isKindOfClass:[Photo class]]) {
-                Photo *photoObject = (Photo *)image;
-                UIImageView *imageView = [UIImageView new];
-                
-                NSURLRequest *request = [[NSURLRequest alloc] initWithURL:photoObject.photo604URL];
-                
-                __weak UIImageView *weakImageView = imageView;
-                
-                [imageView setImageWithURLRequest:request
-                                 placeholderImage:nil
-                                          success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-                                              weakImageView.image = image;
-                                              [self displayImage:weakImageView withImage:image withImageURL:photoObject.photo2560URL];
-                                          }
-                                          failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
-                                          }];
-                [self.imageFrames addObject:photoObject];
-                [self.imageViews addObject:imageView];
-                
-            }
-        }
-        
-        CGFloat galleryWidth = UIScreen.mainScreen.bounds.size.width - imageViewGalleryOffset * 2;
-        CGFloat galleryHeight = 0.0;
-        
-        if (images.count == 1) {
-            if ([[images firstObject] isKindOfClass:[Photo class]]) {
-                Photo *photoObject = [images firstObject];
-                galleryHeight = photoObject.photo604size.height * galleryWidth / photoObject.photo604size.width;
-            }
-        } else {
-            NSInteger rowsCount = round((images.count + 1) / 2);
-            CGFloat imageHeight = ((galleryWidth - imageViewGalleryInset) / 2);
-            galleryHeight = rowsCount * imageHeight + (rowsCount - 1) * imageViewGalleryInset - imageViewGalleryInset;
-        }
-        
-        self.frame = CGRectMake(0.0, 0.0, galleryWidth, galleryHeight);
-        [self setFramesForImageViewsToFitSize:CGSizeMake(galleryWidth, galleryHeight)];
+        [self setupWithImages:images];
     }
-    
     return self;
 }
 
-- (void)displayImage:(UIImageView *)imageView withImage:(UIImage *)image  withImageURL:(NSURL *)imageURL {
-    NSInteger imageIndex = [self.images indexOfObject:image];
-    [imageView setImage:image];
-    imageView.contentMode = UIViewContentModeScaleAspectFill;
-    
-    [imageView setupImageViewerWithDatasource:self initialIndex:imageIndex onOpen:nil onClose:nil];
-}
-
-
+#pragma mark - MHFacebookImageViewerDatasource
 - (NSInteger)numberImagesForImageViewer:(MHFacebookImageViewer *)imageViewer {
     return [self.images count];
 }
-
 
 - (NSURL *)imageURLAtIndex:(NSInteger)index imageViewer:(MHFacebookImageViewer *)imageViewer {
     if ([[self.images objectAtIndex:index] isKindOfClass:[Photo class]]) {
@@ -115,69 +55,152 @@ CGFloat const imageViewGalleryInset = 5.0;
     return nil;
 }
 
-- (void)setFramesForImageViewsToFitSize:(CGSize)frameSize {
+#pragma mark - Methods
+- (void)setupWithImages:(NSArray *)images {
+    self.images = images;
+    
+    [self setupSubViews];
+    [self setupGalleryOffset];
+    
+    self.imageViews = [self galleryImageViewsForImages:images];
+    [self setupGalleryFrameForImages:images];
+}
+
+- (void)setupSubViews {
+    [self addSubview:self.contentView];
+    [self.contentView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+}
+
+- (void)setupGalleryOffset {
+    self.galleryOffset = 9.0;
+}
+
+- (CGSize)gallerySizeForImages:(NSArray *)images {
+    CGFloat galleryWidth = UIScreen.mainScreen.bounds.size.width - self.galleryOffset * 2;
+    CGFloat galleryHeight = 0.0;
+    
+    if (self.images.count == 1) {
+        if ([[images firstObject] isKindOfClass:[Photo class]]) {
+            Photo *photoObject = [images firstObject];
+            galleryHeight = photoObject.photo604size.height * galleryWidth / photoObject.photo604size.width;
+        }
+    } else {
+        NSInteger rowsCount = round((images.count + 1) / 2);
+        CGFloat imageHeight = ((galleryWidth - galleryInset) / 2);
+        galleryHeight = rowsCount * imageHeight + (rowsCount - 1) * galleryInset - galleryInset;
+    }
+    return CGSizeMake(galleryWidth, galleryHeight);
+}
+
+- (NSArray *)galleryImageViewsForImages:(NSArray *)images {
+    NSMutableArray *imageViews = [NSMutableArray array];
+    
+    for (id image in images) {
+        if ([image isKindOfClass:[Photo class]]) {
+            Photo *photo = (Photo *)image;
+            UIImageView * imageView = [self imageViewFor:photo];
+            [imageViews addObject:imageView];
+        }
+    }
+    
+    return imageViews;
+}
+
+- (UIImageView *)imageViewFor:(Photo *)photo {
+    UIImageView *imageView = [UIImageView new];
+    imageView.contentMode = UIViewContentModeScaleAspectFill;
+    imageView.clipsToBounds = YES;
+    
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:photo.photo604URL];
+    
+    __weak UIImageView *weakImageView = imageView;
+    [imageView setImageWithURLRequest:request
+                     placeholderImage:nil
+                              success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+                                  [self displayImage:weakImageView withImage:image withImageURL:photo.photo2560URL];
+                              }
+                              failure:nil];
+    return imageView;
+}
+
+- (void)displayImage:(UIImageView *)imageView withImage:(UIImage *)image withImageURL:(NSURL *)imageURL {
+    NSInteger imageIndex = [self.images indexOfObject:image];
+    imageView.image = image;
+    imageView.contentMode = UIViewContentModeScaleAspectFill;
+    
+    [imageView setupImageViewerWithDatasource:self initialIndex:imageIndex onOpen:nil onClose:nil];
+}
+
+- (void)setupGalleryFrameForImages:(NSArray *)images {
+    CGSize gallerySize = [self gallerySizeForImages:images];
+    self.frame = CGRectMake(0.0, 0.0, gallerySize.width, gallerySize.height);
+    [self setupFramesForImageViewsToFitSize:gallerySize];
+}
+
+- (void)setupFramesForImageViewsToFitSize:(CGSize)frameSize {
     NSInteger imageIndex = 0;
     UIImageView *prevImageView = [UIImageView new];
     
     for (UIImageView *imageView in self.imageViews) {
-        
-        imageView.contentMode = UIViewContentModeScaleAspectFill;
-        imageView.clipsToBounds = YES;
+        [self addSubview:imageView];
+        imageView.translatesAutoresizingMaskIntoConstraints = NO;
         
         if (self.imageViews.count == 1) {
-
-            [self addSubview:imageView];
-            imageView.translatesAutoresizingMaskIntoConstraints = NO;
-            [imageView.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
-            [imageView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor].active = YES;
-            [imageView.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
-            break;
-            
+            [self addImageViewWhenCountEqualsOne:imageView];
         } else {
-            
-            NSLayoutAnchor *topAnchor = [NSLayoutAnchor new];
-            NSInteger topAnchorConstant = 0;
-            NSLayoutAnchor *leftAnchor = [NSLayoutAnchor new];
-            NSInteger leftAnchorConstant = 0;
-            
-            const BOOL isFirstImage = imageIndex == 0;
-            const BOOL isSecondImage = imageIndex == 1;
-            const BOOL isOddNumberImage = imageIndex % 2 && imageIndex != 1;
-            const BOOL isEvenNumberImage = !(imageIndex % 2) && imageIndex != 2;
-            
-            if (isFirstImage) {
-                topAnchor = self.topAnchor;
-                topAnchorConstant = 0;
-                leftAnchor = self.leftAnchor;
-                leftAnchorConstant = 0;
-            } else if (isSecondImage) {
-                topAnchor = self.topAnchor;
-                topAnchorConstant = 0;
-                leftAnchor = prevImageView.rightAnchor;
-                leftAnchorConstant = imageViewGalleryInset;
-            } else if (isEvenNumberImage) {
-                topAnchor = prevImageView.bottomAnchor;
-                topAnchorConstant = imageViewGalleryInset;
-                leftAnchor = self.leftAnchor;
-                leftAnchorConstant = 0;
-            } else if (isOddNumberImage) {
-                topAnchor = prevImageView.topAnchor;
-                topAnchorConstant = 0;
-                leftAnchor = prevImageView.rightAnchor;
-                leftAnchorConstant = imageViewGalleryInset;
-            }
-            
-            [self addSubview:imageView];
-            imageView.translatesAutoresizingMaskIntoConstraints = NO;
-            [imageView.topAnchor constraintEqualToAnchor:topAnchor constant: topAnchorConstant].active = YES;
-            [imageView.leftAnchor constraintEqualToAnchor:leftAnchor constant: leftAnchorConstant].active = YES;
-            [imageView.widthAnchor constraintEqualToConstant:(self.frame.size.width - imageViewGalleryInset)/ 2].active = YES;
-            [imageView.heightAnchor constraintEqualToConstant:(self.frame.size.width - imageViewGalleryInset)/ 2].active = YES;
-            
+            [self addImageViewWhenCountMoreThanOne:imageView withImageIndex:imageIndex andPrevImageView:prevImageView];
             imageIndex += 1;
             prevImageView = imageView;
         }
     }
+}
+
+- (void)addImageViewWhenCountEqualsOne:(UIImageView *)imageView {
+    [imageView.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
+    [imageView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor].active = YES;
+    [imageView.widthAnchor constraintEqualToAnchor:self.widthAnchor].active = YES;
+}
+
+- (void)addImageViewWhenCountMoreThanOne:(UIImageView *)imageView withImageIndex:(NSInteger)imageIndex andPrevImageView:(UIImageView *)prevImageView {
+    const BOOL isFirstImage = imageIndex == 0;
+    const BOOL isSecondImage = imageIndex == 1;
+    const BOOL isOddNumberImage = imageIndex % 2 && imageIndex != 0;
+    const BOOL isEvenNumberImage = !(imageIndex % 2) && imageIndex != 1;
+    
+    NSLayoutAnchor *topAnchor = [NSLayoutAnchor new];
+    NSInteger topAnchorConstant = 0;
+    NSLayoutAnchor *leftAnchor = [NSLayoutAnchor new];
+    NSInteger leftAnchorConstant = 0;
+    
+    if (isFirstImage) {
+        topAnchor = self.topAnchor;
+        topAnchorConstant = 0;
+        leftAnchor = self.leftAnchor;
+        leftAnchorConstant = 0;
+    } else if (isSecondImage) {
+        topAnchor = self.topAnchor;
+        topAnchorConstant = 0;
+        leftAnchor = prevImageView.rightAnchor;
+        leftAnchorConstant = galleryInset;
+    } else if (isEvenNumberImage) {
+        topAnchor = prevImageView.bottomAnchor;
+        topAnchorConstant = galleryInset;
+        leftAnchor = self.leftAnchor;
+        leftAnchorConstant = 0;
+    } else if (isOddNumberImage) {
+        topAnchor = prevImageView.topAnchor;
+        topAnchorConstant = 0;
+        leftAnchor = prevImageView.rightAnchor;
+        leftAnchorConstant = galleryInset;
+    }
+    
+    CGFloat imageViewWidth = (self.frame.size.width - galleryInset)/ 2;
+    CGFloat imageViewHeight = imageViewWidth;
+    
+    [imageView.topAnchor constraintEqualToAnchor:topAnchor constant: topAnchorConstant].active = YES;
+    [imageView.leftAnchor constraintEqualToAnchor:leftAnchor constant: leftAnchorConstant].active = YES;
+    [imageView.widthAnchor constraintEqualToConstant:imageViewWidth].active = YES;
+    [imageView.heightAnchor constraintEqualToConstant:imageViewHeight].active = YES;
 }
 
 @end

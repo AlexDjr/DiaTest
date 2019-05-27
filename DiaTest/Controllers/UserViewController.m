@@ -233,7 +233,7 @@ static NSInteger const postsInRequest = 20;
 }
 
 - (void)setup:(UserInfoCell *)cell withUser:(User *)user {
-    [cell setAvatarWith:self.user.photoURL200];
+    [cell setupAvatarWith:self.user.photoURL200];
     
     if (user) {
         [self.helper setupUserInfoTextFor:user inCell:cell];

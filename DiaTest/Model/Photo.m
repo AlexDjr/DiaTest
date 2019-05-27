@@ -10,7 +10,6 @@
 
 @implementation Photo
 - (instancetype)initWithServerResponse:(NSDictionary *)response {
-    
     self = [super init];
     if (self) {
         [self setupFromResponse:response];

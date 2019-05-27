@@ -22,7 +22,7 @@
 }
 
 #pragma mark - Public Methods
-- (void)setAvatarWith:(NSURL *)url {
+- (void)setupAvatarWith:(NSURL *)url {
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
     
     __weak VKContentCell *weakCell = self;

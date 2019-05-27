@@ -27,9 +27,9 @@
 - (void)setupAuthorAvatarInCell:(CommentCell *)cell {
     const BOOL isCommentFromGroup = [cell.comment.fromId hasPrefix:@"-"];
     if (isCommentFromGroup) {
-        [cell setAvatarWith:cell.comment.group.photoURL50];
+        [cell setupAvatarWith:cell.comment.group.photoURL50];
     } else {
-        [cell setAvatarWith:cell.comment.user.photoURL50];
+        [cell setupAvatarWith:cell.comment.user.photoURL50];
     }
 }
 

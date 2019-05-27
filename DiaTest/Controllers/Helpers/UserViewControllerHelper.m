@@ -52,7 +52,7 @@ static CGFloat const defaultLikesButtonTopConstraintValue = 9.0;
 
 - (void)setupAuthorAvatarInCell:(PostCell *)cell {
     NSURL *authorPhotoURL = cell.post.user.photoURL50;
-    [cell setAvatarWith:authorPhotoURL];
+    [cell setupAvatarWith:authorPhotoURL];
 }
 
 - (void)setupAutorNameInCell:(PostCell *)cell {
